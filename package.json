@@ -1,0 +1,22 @@
+{
+  "name": "go_cart_stats",
+  "version": "0.1.0",
+  "description": "Data Collection App for Go Cart Stats and Group Voting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkottke90/go_cart_stats.git"
+  },
+  "author": "Thomas Kottke <t.kottke90@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tkottke90/go_cart_stats/issues"
+  },
+  "homepage": "https://github.com/tkottke90/go_cart_stats#readme",
+  "devDependencies": {
+    "firebase-tools": "^8.6.0"
+  }
+}
