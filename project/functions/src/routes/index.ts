@@ -7,7 +7,6 @@ import { logger } from 'firebase-functions';
 import Application from '../classes/application.class';
 
 const readDir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
 
 /**
  * This module is designed to register express http endpoints.  Modules should be loaded into this file with the follwoing syntax:
@@ -20,10 +19,7 @@ const readFile = promisify(fs.readFile);
  */
 export default async function routes(app: Application): Promise<void> {
   app.express.get('/', async (request: express.Request, response: express.Response) => {
-    const packageJSON = await readFile(path.join(app.environment.CWD, 'package.json'), 'utf8');
-    const { name, version, description, homepage } = JSON.parse(packageJSON);
-
-    response.status(200).json({ name, version, description, homepage });
+    response.status(200).send('OK');
   });
 
   const directory = await readDir(path.resolve(__dirname));
