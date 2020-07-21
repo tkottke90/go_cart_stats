@@ -20,7 +20,8 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      { "source": "**", "function": "api" }
+      { "source": "**", "function": "api" },
+      { "source": "**/*.css", "content-type": "text/css" }
     ]
   },
   "storage": {

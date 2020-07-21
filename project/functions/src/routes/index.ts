@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
+import { resolve } from 'path';
 import { logger } from 'firebase-functions';
 
 import Application from '../classes/application.class';
@@ -18,7 +19,9 @@ const readDir = promisify(fs.readdir);
  * @param app Application instance
  */
 export default async function routes(app: Application): Promise<void> {
-  app.express.get('/', async (request: express.Request, response: express.Response) => {
+  app.express.use('/', express.static(resolve(__dirname, '../dist' )));
+  
+  app.express.get('/status', async (request: express.Request, response: express.Response) => {
     response.status(200).send('OK');
   });
 
@@ -28,5 +31,10 @@ export default async function routes(app: Application): Promise<void> {
     logger.info(`Importing Route: ${file}`);
     await import(path.resolve(__dirname, file)).then( (module) => module.initialize(app));
   }));
+
+  app.express.all('/*', (req, res) => {
+    console.dir({ endpoint: '*', path: req.path});
+    res.sendFile(resolve(__dirname, '..', 'dist', 'index.html' ));
+  })
 
 }
