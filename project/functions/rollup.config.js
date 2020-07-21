@@ -37,7 +37,9 @@ export default {
         }
       }
     }),
-    postcss({}),
+    postcss({
+      writeDefinitions: true
+    }),
     terser({ ecma: 8 }),
     image(),
     inject(),
