@@ -28,23 +28,23 @@
   },
   "emulators": {
     "functions": {
-      "port": 9010
+      "port": 10091
     },
     "firestore": {
-      "port": 9020
+      "port": 10020
     },
     "database": {
-      "port": 9030
+      "port": 10030
     },
     "hosting": {
-      "port": 9040
+      "port": 10040
     },
     "pubsub": {
-      "port": 9050
+      "port": 10050
     },
     "ui": {
       "enabled": true,
-      "port": 9000
+      "port": 10000
     }
   }
 }
