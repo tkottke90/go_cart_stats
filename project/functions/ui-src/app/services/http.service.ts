@@ -1,6 +1,6 @@
 import { fromFetch } from 'rxjs/fetch';
 
-export class HTTPService {
+export default class HTTPService {
 
   public static createHeaders(options: any): Headers {
     const headers = new Headers();

@@ -3,17 +3,17 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/analytics'
 
-export class FirebaseService {
+export default class FirebaseService {
 
   constructor() {
     firebase.initializeApp({});
   }
 
-  signInWithUNPW(email: string, password: string) {
+  public static signInWithUNPW(email: string, password: string) {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   }
 
-  async signInWIthGoogle() {
+  public static async signInWIthGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     
     try {
@@ -26,7 +26,7 @@ export class FirebaseService {
     }
   }
 
-  signOut() {
+  public static signOut() {
     return firebase.auth().signOut();
   }
 }
