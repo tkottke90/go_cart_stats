@@ -4,6 +4,7 @@ import { getRoutes, routes } from '../bootstrap.routes';
 import { Router } from './router';
 import { Route } from './util/route';
 import { BaseComponent } from './components/base-component';
+import { fromEvent } from 'rxjs';
 
 import './util/router-outlet';
 
