@@ -1,15 +1,18 @@
 import { html } from 'lit-html';
-import styles from './home.module.css'
+// import styles from './home.module.css'
 
 import { PageComponent } from '../../components/page-component';
+
+import '../../components/header/header-component';
 
 const tag = 'home-component';
 
 class HomeElement extends PageComponent {
   render() {
     return html`
-      <style></style>
-      <h1 class=${styles.header}>CRA Project Framework</h1>
+     <header-component>
+      <h3 slot="title">Carousel Karters</h3>
+     </header-component>
     `
   }
 }
