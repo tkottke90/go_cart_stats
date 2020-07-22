@@ -17,9 +17,20 @@ class AppComponent extends BaseComponent {
     super();
 
     const _theme = window.localStorage.getItem('theme');
+    const _userTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    fromEvent(_userTheme, 'change')
+      .subscribe( (event: any) => {
+        const newTheme = event.matches ? 'dark' : 'light';
+        this.theme = newTheme;
+        window.localStorage.setItem('theme', newTheme);
+      })
 
     if (_theme === 'light' || _theme === 'dark') {
       this.theme = _theme;
+    } else if (_userTheme.matches) {
+      this.theme = 'dark';
+      window.localStorage.setItem('theme', 'dark');
     } else {
       this.theme = 'light';
       window.localStorage.setItem('theme', 'light');
