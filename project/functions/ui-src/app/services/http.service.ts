@@ -17,12 +17,22 @@ export class HTTPService {
   }
 
   public static post(url: string, data: any, options: Headers = new Headers()){
-    const request: RequestInit = { body: data, headers: options, method: 'GET' }    
+    const request: RequestInit = { body: data, headers: options, method: 'POST' }    
+    return fromFetch(url, request);
+  }
+
+  public static patch(url: string, data: any, options: Headers = new Headers()){
+    const request: RequestInit = { body: data, headers: options, method: 'PATCH' }    
+    return fromFetch(url, request);
+  }
+  
+  public static put(url: string, data: any, options: Headers = new Headers()){
+    const request: RequestInit = { body: data, headers: options, method: 'PUT' }    
     return fromFetch(url, request);
   }
 
   public static delete(url: string, options: Headers = new Headers()){
-    const request: RequestInit = { headers: options, method: 'GET' }    
+    const request: RequestInit = { headers: options, method: 'DELETE' }    
     return fromFetch(url, request);
   }
 
