@@ -3,12 +3,23 @@ import { Route } from './app/util/route';
 
 const routes: Route[] = [
   new Route({
+    icon: 'login',
+    label: 'Login',
+    path: '/login',
+    promise: () => import('./app/pages/login/login'),
+    render: true,
+    tag: 'login-component'
+  }),
+  new Route({
     icon: 'home',
     label: 'Home',
     path: '/',
     promise: () => import('./app/pages/home/home'),
     render: true,
-    tag: 'home-component'
+    tag: 'home-component',
+    before: (route, context, next) => {
+      
+    }
   })
 ];
 
