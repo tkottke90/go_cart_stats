@@ -32,6 +32,7 @@ export default {
           module: 'ESNext',
           target: 'ESNext',
           moduleResolution: 'node',
+          allowSyntheticDefaultImports: true,
           experimentalDecorators: true,        /* Enables experimental support for ES7 decorators. */
           emitDecoratorMetadata: true,         /* Enables experimental support for emitting type metadata for decorators. */
         }
