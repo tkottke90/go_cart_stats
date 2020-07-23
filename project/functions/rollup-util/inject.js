@@ -32,7 +32,7 @@ export default (opts = {}) => {
           const indexPath = path.resolve(__dirname, 'lib/dist/index.html');
           const index = fs.readFileSync(indexPath, 'utf8');
           const { document } = new JSDOM(index).window;
-          const bootstrap = document.querySelector('script');
+          const bootstrap = document.querySelector('script[src="assets/index.js"]');
           bootstrap.src = `/assets/${map['ui-src/bootstrap.ts']}`
           // todo, this alllllll needs to be abstracted
           // this is MVP logic for the moment
