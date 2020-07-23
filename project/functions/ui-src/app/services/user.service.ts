@@ -3,7 +3,11 @@ import FirebaseService from './firebase.service';
 
 export default class UserService {
 
-  public static login(username, password) {
+  public static getUser() {
+    return FirebaseService.currentUser();
+  }
+
+  public static login(username: string, password: string) {
     return FirebaseService.signInWithUNPW(username, password);
   }
 
