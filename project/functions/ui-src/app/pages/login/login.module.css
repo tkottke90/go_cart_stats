@@ -1,3 +1,78 @@
-.header {
-  color: var(--theme-primary);
+.loginContainer {
+  --login-background: #1e1e1e;
+  --login-foreground: #fff;
+  --login-input-background: #808080;
+
+  --google-blue: #4285f4;
+  --google-light-font: #7f797a;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--login-background);
+  color: var(--login-foreground);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.title > h2 {
+  font-size: 2rem;
+  font-family: 'Racing Sans One', serif;
+  font-weight: 500;
+}
+
+.loginContainer > form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.loginContainer > form > input {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+
+  font-size: 1.025rem;
+
+  border: 1px solid var(--login-foreground);
+  border-radius: 0.25rem;
+
+  color: var(--login-foreground);
+  background-color: var(--login-input-background);
+}
+
+.loginBtn {
+  margin: 1rem 0 1rem auto;
+
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+
+  background-color: var(--login-background);
+  color: var(--login-foreground);
+  border: 1px solid var(--login-foreground);
+}
+
+.googleBtn {
+  padding-right: 1rem;
+
+  display: flex;
+  align-items: center;
+
+  background-color: #fff;
+  border: none;
+}
+
+.googleBtn > svg{
+  width: 3rem;
+  height: 3rem;
+}
+
+.googleBtn > span {
+  font-family: Roboto, sans-serif;
+  color: var(--google-light-font);
+  font-weight: 600;
+  font-size: 1.15rem;
 }
