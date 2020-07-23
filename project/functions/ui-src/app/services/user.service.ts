@@ -7,7 +7,11 @@ export default class UserService {
     return FirebaseService.signInWithUNPW(username, password);
   }
 
-  public static logout() {}
+  public static loginWithGoogle() {
+    return FirebaseService.signInWIthGoogle();
+  }
 
-  public static signUp() {}
+  public static logout() {
+    return FirebaseService.signOut();
+  }
 }
