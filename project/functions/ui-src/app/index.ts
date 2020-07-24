@@ -41,7 +41,8 @@ class AppComponent extends BaseComponent {
   getTag(route: Route) {
     const tag = route.tag;
     const classes = ['page'];
-    if (Router.currentLocation.pathname === route.path) {
+    const path = Router.currentLocation ? Router.currentLocation.pathname : false;
+    if (path === route.path) {
       classes.push('active');
     }
 
