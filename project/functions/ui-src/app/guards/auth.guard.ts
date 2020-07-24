@@ -1,5 +1,5 @@
-import UserService from '../services/user.service';
+import FirebaseService from '../services/firebase.service';
 
-export default function() {
-  return UserService.getUser();
+export default async function() {
+  return await FirebaseService.getCurrentUser();
 }

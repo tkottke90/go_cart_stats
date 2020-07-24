@@ -1,23 +1,56 @@
 import firebase from 'firebase/app';
 
-fetch('/__/firebase/init.json').then(async response => {
-  firebase.initializeApp(await response.json());
+// if (firebase.apps.length === 0) {
+//   fetch('/__/firebase/init.json').then(async response => {
+//     firebase.initializeApp(await response.json());
 
-  // As httpOnly cookies are to be used, do not persist any state client side.
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
-});
+//     // As httpOnly cookies are to be used, do not persist any state client side.
+//     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+//   })
+// }
 
 import 'firebase/auth';
 
+
+
 export default class FirebaseService {
 
+  public static getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged( user => {
+        unsubscribe();
+        resolve(user);
+      }, reject);
+    });
+  };
+
+  public static init() {
+    return new Promise((resolve, reject) => {
+      console.log('init firebase');
+      fetch('/__/firebase/init.json')
+        .then(async response => {
+          console.log('got config');
+          firebase.initializeApp(await response.json());
+          console.log('initialized');
+          // As httpOnly cookies are to be used, do not persist any state client side.
+          firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+          resolve('true');
+        })
+        .catch( async error => {
+          console.error('error starting firebase');
+          reject(false);
+        });
+
+    });
+  }
+
   public static currentUser(): firebase.User | null {
+    console.dir(firebase);
+
     return firebase.auth().currentUser;
   }
 
   public static signInWithUNPW(email: string, password: string): Promise<firebase.auth.UserCredential> {
-    console.log(email, password);
-
     return firebase.auth().signInWithEmailAndPassword(email, password);
   }
 

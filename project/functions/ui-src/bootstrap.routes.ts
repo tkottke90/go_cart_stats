@@ -21,9 +21,7 @@ const routes: Route[] = [
     render: true,
     tag: 'home-component',
     before: async (route, context, next) => {
-      const allowed = authGuard();
-      
-      console.dir(allowed);
+      const allowed = await authGuard();
 
       if (!allowed) {
         Router.navigate('/login');
