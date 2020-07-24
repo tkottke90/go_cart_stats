@@ -17,7 +17,7 @@ export default class HTTPService {
   }
 
   public static post(url: string, data: any, options: Headers = new Headers()){
-    const request: RequestInit = { body: data, headers: options, method: 'POST' }    
+    const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'POST' } 
     return fromFetch(url, request);
   }
 
