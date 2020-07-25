@@ -2,7 +2,7 @@ import * as Joi from '@hapi/joi';
 
 export default Joi.object({
     userId: Joi.string(),
-    date: Joi.date().min('now'),
+    date: Joi.date(),
     cartNumber: Joi.number().positive(),
     laps: Joi.array().items(Joi.object({
         display: Joi.string().pattern(/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/),
