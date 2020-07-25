@@ -6,11 +6,6 @@ export default function() {
     const auth = context.app.admin.auth();
     const cookie = _.get(context, 'request.cookies.session', '');
 
-    console.dir({
-      jar: context.request.cookies,
-      cookie
-    })
-
     try {
       await auth.verifySessionCookie(cookie, true);
       
