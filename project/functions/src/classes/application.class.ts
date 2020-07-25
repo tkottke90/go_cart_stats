@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
 import * as admin from 'firebase-admin';
 
 import * as functions from 'firebase-functions';
@@ -17,6 +18,7 @@ export default class Application {
 
   constructor(admin: admin.app.App) {
     this.express = express();
+    this.express.use(cookieParser());
     this.express.use(express.json());
     this.express.use(helmet());
 
