@@ -1,65 +1,60 @@
 import BaseRoute from './base-route.class';
 import Application from './application.class';
+import { v4 as uuid } from 'uuid';
 
 import { logger } from 'firebase-functions';
-// import { firestore } from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 import { ObjectSchema, object } from '@hapi/joi';
 import { IContext, IModelHooks } from '../interfaces/routing.interfaces';
 
-// import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+const queryDocument = (collection: admin.firestore.CollectionReference, query: any) => {
+  const keys = Object.keys(query);
 
-// const queryDocument = (document: firestore.CollectionReference, query: any) => {
-//   const keys = Object.keys(query);
+  if (keys.length > 1) {
+    return collection;
+  }
 
+  const docAndQuery = collection;
+  const equivilanceQueries = keys.filter( item => typeof query[item] !== 'object' );
+  const comparisonQueries = keys.filter( item => typeof query[item] === 'object' );
 
-//   admin.firestore
+  console.dir({
+    equivilanceQueries,
+    comparisonQueries
+  })
 
-//   if (keys.length > 1) {
-//     return document;
-//   }
-
-//   const docAndQuery = document;
-//   const equivilanceQueries = keys.filter( item => typeof query[item] !== 'object' );
-//   const comparisonQueries = keys.filter( item => typeof query[item] === 'object' );
-
-//   console.dir({
-//     equivilanceQueries,
-//     comparisonQueries
-//   })
-
-//   equivilanceQueries.forEach( item => docAndQuery.where( item, '==' , query[item] ));
-//   comparisonQueries.forEach( item => {
-//     const opString = Object.keys(query[item])[0];
+  equivilanceQueries.forEach( item => docAndQuery.where( item, '==' , query[item] ));
+  comparisonQueries.forEach( item => {
+    const opString = Object.keys(query[item])[0];
     
-//     switch(opString){
-//       case 'gt': 
-//         docAndQuery.where(item, '>', query[item][opString])
-//         break;
-//       case 'gte': 
-//         docAndQuery.where(item, '>=', query[item][opString])
-//         break;
-//       case 'lt': 
-//         docAndQuery.where(item, '<', query[item][opString])
-//         break;
-//       case 'lte': 
-//         docAndQuery.where(item, '<=', query[item][opString])
-//         break;
-//       case 'contains': 
-//         docAndQuery.where(item, 'array-contains', query[item][opString])
-//         break;
-//       case 'contains-any': 
-//         docAndQuery.where(item, 'array-contains-any', query[item][opString])
-//         break;
-//       case 'in': 
-//         docAndQuery.where(item, 'in', query[item][opString])
-//         break;
-//     }
-//   });
+    switch(opString){
+      case 'gt': 
+        docAndQuery.where(item, '>', query[item][opString])
+        break;
+      case 'gte': 
+        docAndQuery.where(item, '>=', query[item][opString])
+        break;
+      case 'lt': 
+        docAndQuery.where(item, '<', query[item][opString])
+        break;
+      case 'lte': 
+        docAndQuery.where(item, '<=', query[item][opString])
+        break;
+      case 'contains': 
+        docAndQuery.where(item, 'array-contains', query[item][opString])
+        break;
+      case 'contains-any': 
+        docAndQuery.where(item, 'array-contains-any', query[item][opString])
+        break;
+      case 'in': 
+        docAndQuery.where(item, 'in', query[item][opString])
+        break;
+    }
+  });
 
-//   return docAndQuery;
-// }
+  return docAndQuery;
+}
 
 export default class FirestoreClass extends BaseRoute {
   public Model: ObjectSchema<any> = object(); // Data Validation
@@ -82,6 +77,7 @@ export default class FirestoreClass extends BaseRoute {
 
     this.setup({
       routes: [
+        { method: 'get', path: '/', action: this.find, beforeHooks: [...beforeHooks.all, ...beforeHooks.get ], afterHooks: [...afterHooks.all, ...afterHooks.get ], errorHooks: [...errorHooks.all, ...errorHooks.get ]},
         { method: 'get', path: '/:id', action: this.get, beforeHooks: [...beforeHooks.all, ...beforeHooks.get ], afterHooks: [...afterHooks.all, ...afterHooks.get ], errorHooks: [...errorHooks.all, ...errorHooks.get ]},
         { method: 'post', path: '/', action: this.post, beforeHooks: [...beforeHooks.all, ...beforeHooks.create ], afterHooks: [...afterHooks.all, ...afterHooks.create ], errorHooks: [...errorHooks.all, ...errorHooks.create ]},
         { method: 'patch', path: '/:id', action: this.patch, beforeHooks: [...beforeHooks.all, ...beforeHooks.update ], afterHooks: [...afterHooks.all, ...afterHooks.update ], errorHooks: [...errorHooks.all, ...errorHooks.update ]},
@@ -91,34 +87,40 @@ export default class FirestoreClass extends BaseRoute {
     });
   }
 
-  // public find = (context: IContext) => {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       const ref = this.db.collection(this.ModelName);        
+  public find = (context: IContext) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ref = this.db.collection(this.ModelName);        
         
-  //       if (!ref) {
-  //         reject('Missing Model');
-  //       }
+        if (!ref) {
+          reject('Missing Model');
+        }
 
-  //       console.dir(context.query);
-  //       const query = queryDocument(ref, context.query);
-  //       const result = await query.get();
+        console.dir(context.query);
+        const query = queryDocument(ref, context.query);
+        const result = await query.get();
 
-  //       const data: any[] = result.docs.map( (doc: admin.firestore.DocumentData) => {
-  //         console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-  //         return doc.data();
-  //       });
+        const data: any[] = result.docs.map( (doc: admin.firestore.DocumentData) => {
+          console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+          return doc.data();
+        });
 
-  //       resolve(data);
-  //     } catch (err) {
-  //       logger.error(err);
-  //       reject(err);
-  //     }
-  //   })
-  // }
+        console.dir(data);
+
+        resolve(data);
+      } catch (err) {
+        logger.error(err);
+        reject({err, _code: 400 });
+      }
+    })
+  }
 
   public get = (context: IContext) => {
     return new Promise(async (resolve, reject) => {
+      if (!context.params.id) {
+        reject(new Error('Document ID Required'));
+      }
+      
       try {
         const ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${context.params.id}`)
         const doc: admin.firestore.DocumentSnapshot = await ref.get();
@@ -144,7 +146,32 @@ export default class FirestoreClass extends BaseRoute {
           return;
         }
 
-        const ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${context.data.userId}`)
+        let id = context.data.id || uuid();
+        
+        let ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${id}`)
+        let docExist = true;
+        let tries = 0;
+        let MAX_RETRIES = 5;
+
+        while (docExist || tries < MAX_RETRIES) {
+          const doc = await ref.get();
+
+          if (!doc.exists) {
+            docExist = false;
+            break;
+          }
+
+          id = uuid();
+          ref = await this.db.doc(`${this.ModelName}/${id}`)
+          tries++;
+        }
+
+        if (tries >= MAX_RETRIES) {
+          throw new Error('Unable to create report: Max Retries reached');
+        }
+
+        delete context.data.id;
+        
         await ref.set(context.data);
 
         resolve({ _code: 201 });
