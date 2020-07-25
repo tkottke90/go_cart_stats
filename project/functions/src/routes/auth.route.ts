@@ -57,7 +57,7 @@ class AuthRoute extends BaseClass {
       return { status: 'success' };
     } catch (err) {
       console.error(err);
-      context.result = {
+      context.error = {
         _code: 401
       };
       throw new Error('Unauthorized Request!');

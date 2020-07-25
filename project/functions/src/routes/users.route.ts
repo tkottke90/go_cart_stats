@@ -4,10 +4,12 @@ import Application from "../classes/application.class";
 import UserModel from '../models/users.model';
 import { IHooksArray } from "../interfaces/routing.interfaces";
 
+import sessionHook from '../hooks/verify-session.hook';
+
 class UserRoute extends FirestoreClass {
 
   private beforeHooks: IHooksArray = {
-    all: [],
+    all: [ sessionHook() ],
     find: [],
     get: [],
     create: [],

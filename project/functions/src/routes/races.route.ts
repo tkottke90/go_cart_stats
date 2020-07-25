@@ -4,10 +4,12 @@ import Application from "../classes/application.class";
 import RaceModel from '../models/race.model';
 import { IHooksArray } from "../interfaces/routing.interfaces";
 
+import sessionHook from '../hooks/verify-session.hook';
+
 class RaceRoute extends FirestoreClass {
 
   private beforeHooks: IHooksArray = {
-    all: [],
+    all: [ sessionHook() ],
     find: [],
     get: [],
     create: [],
