@@ -103,8 +103,6 @@ export default class FirestoreClass extends BaseRoute {
 
         const result = await query.get();
 
-        console.dir(JSON.stringify(result));
-
         const data: any[] = result.docs.map( (doc: admin.firestore.DocumentData) => {
           console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
           return doc.data();
