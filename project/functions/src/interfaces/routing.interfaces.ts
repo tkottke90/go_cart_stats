@@ -17,7 +17,7 @@ export interface IContext {
   readonly response: Response;
   readonly app: Application;
   readonly params: { [key: string]: any };
-  readonly query: { [key: string]: any };
+  query: { [key: string]: any };
   user: any;
   readonly method: string;
   data?: any;
