@@ -15,45 +15,48 @@ const queryDocument = (collection: admin.firestore.CollectionReference, query: a
     return collection;
   }
 
-  const docAndQuery = collection;
+  let docAndQuery: admin.firestore.Query | false = false;;
   const equivilanceQueries = keys.filter( item => typeof query[item] !== 'object' );
   const comparisonQueries = keys.filter( item => typeof query[item] === 'object' );
 
-  console.dir({
-    equivilanceQueries,
-    comparisonQueries
-  })
-
-  equivilanceQueries.forEach( item => docAndQuery.where( item, '==' , query[item] ));
+  equivilanceQueries.forEach( item => {
+    const queryAble = docAndQuery ? docAndQuery : collection;
+    docAndQuery = queryAble.where( item, '==' , query[item] )
+  });
+  
   comparisonQueries.forEach( item => {
     const opString = Object.keys(query[item])[0];
-    
+    const queryAble = docAndQuery ? docAndQuery : collection;
+
     switch(opString){
-      case 'gt': 
-        docAndQuery.where(item, '>', query[item][opString])
+      case 'gt':
+      docAndQuery = queryAble.where(item, '>', query[item][opString])
         break;
       case 'gte': 
-        docAndQuery.where(item, '>=', query[item][opString])
+      docAndQuery = queryAble.where(item, '>=', query[item][opString])
         break;
       case 'lt': 
-        docAndQuery.where(item, '<', query[item][opString])
+      docAndQuery = queryAble.where(item, '<', query[item][opString])
         break;
       case 'lte': 
-        docAndQuery.where(item, '<=', query[item][opString])
+      docAndQuery = queryAble.where(item, '<=', query[item][opString])
         break;
       case 'contains': 
-        docAndQuery.where(item, 'array-contains', query[item][opString])
+      docAndQuery = queryAble.where(item, 'array-contains', query[item][opString])
         break;
       case 'contains-any': 
-        docAndQuery.where(item, 'array-contains-any', query[item][opString])
+      docAndQuery = queryAble.where(item, 'array-contains-any', query[item][opString])
         break;
       case 'in': 
-        docAndQuery.where(item, 'in', query[item][opString])
+      docAndQuery = queryAble.where(item, 'in', query[item][opString])
         break;
     }
   });
 
-  return docAndQuery;
+  console.log('docAndQuery');
+  console.dir(docAndQuery);
+
+  return docAndQuery ? docAndQuery : collection;
 }
 
 export default class FirestoreClass extends BaseRoute {
@@ -77,9 +80,9 @@ export default class FirestoreClass extends BaseRoute {
 
     this.setup({
       routes: [
-        { method: 'get', path: '/', action: this.find, beforeHooks: [...beforeHooks.all, ...beforeHooks.get ], afterHooks: [...afterHooks.all, ...afterHooks.get ], errorHooks: [...errorHooks.all, ...errorHooks.get ]},
+        { method: 'post', path: '/', action: this.find, beforeHooks: [...beforeHooks.all, ...beforeHooks.get ], afterHooks: [...afterHooks.all, ...afterHooks.get ], errorHooks: [...errorHooks.all, ...errorHooks.get ]},
         { method: 'get', path: '/:id', action: this.get, beforeHooks: [...beforeHooks.all, ...beforeHooks.get ], afterHooks: [...afterHooks.all, ...afterHooks.get ], errorHooks: [...errorHooks.all, ...errorHooks.get ]},
-        { method: 'post', path: '/', action: this.post, beforeHooks: [...beforeHooks.all, ...beforeHooks.create ], afterHooks: [...afterHooks.all, ...afterHooks.create ], errorHooks: [...errorHooks.all, ...errorHooks.create ]},
+        { method: 'post', path: '/create', action: this.post, beforeHooks: [...beforeHooks.all, ...beforeHooks.create ], afterHooks: [...afterHooks.all, ...afterHooks.create ], errorHooks: [...errorHooks.all, ...errorHooks.create ]},
         { method: 'patch', path: '/:id', action: this.patch, beforeHooks: [...beforeHooks.all, ...beforeHooks.update ], afterHooks: [...afterHooks.all, ...afterHooks.update ], errorHooks: [...errorHooks.all, ...errorHooks.update ]},
         { method: 'put', path: '/:id', action: this.put, beforeHooks: [...beforeHooks.all, ...beforeHooks.updateOrCreate ], afterHooks: [...afterHooks.all, ...afterHooks.updateOrCreate ], errorHooks: [...errorHooks.all, ...errorHooks.updateOrCreate ]},
         { method: 'delete', path: '/:id', action: this.delete, beforeHooks: [...beforeHooks.all, ...beforeHooks.delete ], afterHooks: [...afterHooks.all, ...afterHooks.delete ], errorHooks: [...errorHooks.all, ...errorHooks.delete ]},
@@ -96,16 +99,17 @@ export default class FirestoreClass extends BaseRoute {
           reject('Missing Model');
         }
 
-        console.dir(context.query);
-        const query = queryDocument(ref, context.query);
+        const query = queryDocument(ref, context.data);
+
         const result = await query.get();
+
+        console.dir(JSON.stringify(result));
 
         const data: any[] = result.docs.map( (doc: admin.firestore.DocumentData) => {
           console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
           return doc.data();
         });
 
-        console.dir(data);
 
         resolve(data);
       } catch (err) {
