@@ -2,6 +2,7 @@ import * as express from 'express';
 import { logger } from 'firebase-functions';
 import { Router } from 'express';
 import Application from './application.class';
+import * as _ from 'lodash'
 
 import { IContext, IRoute, IHook } from '../interfaces/routing.interfaces';
 
@@ -124,7 +125,7 @@ abstract class BaseRoute {
         }
       }
 
-      const status = context.result._code || 200;
+      const status = _.get(context, 'result._code', 200);
       delete context.result._code;
       const data = context.result;
 
