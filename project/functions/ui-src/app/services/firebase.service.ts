@@ -1,17 +1,5 @@
 import firebase from 'firebase/app';
-
-// if (firebase.apps.length === 0) {
-//   fetch('/__/firebase/init.json').then(async response => {
-//     firebase.initializeApp(await response.json());
-
-//     // As httpOnly cookies are to be used, do not persist any state client side.
-//     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-//   })
-// }
-
 import 'firebase/auth';
-
-
 
 export default class FirebaseService {
 
@@ -25,7 +13,7 @@ export default class FirebaseService {
   };
 
   public static init() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       console.log('init firebase');
       fetch('/__/firebase/init.json')
         .then(async response => {
@@ -34,7 +22,7 @@ export default class FirebaseService {
           console.log('initialized');
           // As httpOnly cookies are to be used, do not persist any state client side.
           firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-          resolve('true');
+          resolve(true);
         })
         .catch( async error => {
           console.error('error starting firebase');
@@ -45,8 +33,6 @@ export default class FirebaseService {
   }
 
   public static currentUser(): firebase.User | null {
-    console.dir(firebase);
-
     return firebase.auth().currentUser;
   }
 
