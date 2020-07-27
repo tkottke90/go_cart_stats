@@ -127,7 +127,16 @@ export default class FirestoreClass extends BaseRoute {
         const ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${context.params.id}`)
         const doc: admin.firestore.DocumentSnapshot = await ref.get();
 
-        resolve(await doc.data());
+        const result = await doc.data();
+
+        if (!result) {
+          reject({
+            _code: 400,
+            message: 'Not Found'
+          });
+        }
+
+        resolve(result);
       } catch (error) {
         logger.error(error);
         reject(error);
