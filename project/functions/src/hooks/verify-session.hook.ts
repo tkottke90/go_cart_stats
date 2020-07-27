@@ -1,3 +1,4 @@
+import { logger } from 'firebase-functions';
 import { IContext } from "../interfaces/routing.interfaces"
 import * as _ from 'lodash';
 
@@ -5,6 +6,8 @@ export default function() {
   return async (context: IContext) => {
     const auth = context.app.admin.auth();
     const cookie = _.get(context, 'request.cookies.session', '');
+
+    logger.debug('Cookies', { cookie, jar: context.request.cookies });
 
     try {
       await auth.verifySessionCookie(cookie, true);
