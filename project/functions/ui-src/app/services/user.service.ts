@@ -20,7 +20,7 @@ export default class UserService {
   }
 
   public static async getSession() {
-    const user = this.getUser();
+    const user = await FirebaseService.getCurrentUser() as firebase.User;
 
     if (!user) {
       return;
@@ -34,5 +34,31 @@ export default class UserService {
 
   public static logout() {
     return FirebaseService.signOut();
+  }
+
+  public static async getUserDetails() {
+    // Get user signed in
+    const firebaseUser = await FirebaseService.getCurrentUser();
+
+    // If no user signed in return false;
+    if (!firebaseUser) {
+      return false;
+    }
+
+    const user = firebaseUser as firebase.User;
+      const response = await HTTPService.get(`/users/${user.uid}`).toPromise();
+      
+      if (response.status !== 200) {
+        throw new Error(await response.json());
+      }
+
+      const userDetails = await response.json();
+  
+      return {
+        ...userDetails,
+        id: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      }
   }
 }
