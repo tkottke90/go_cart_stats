@@ -8,6 +8,7 @@ export namespace User {
     experience?: number;
     number: string;
     rival?: string;
+    new?: boolean
   }
 
 }

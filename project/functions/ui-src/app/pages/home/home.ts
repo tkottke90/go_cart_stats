@@ -53,6 +53,10 @@ class HomeElement extends PageComponent {
     .then( async user => {
       this.user = user;
 
+      if (user.new) {
+        Router.navigate('/new-user');
+      }
+
       this.loading = false;
       this.requestUpdate();
     })
