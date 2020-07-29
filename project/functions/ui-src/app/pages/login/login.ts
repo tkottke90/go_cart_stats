@@ -1,6 +1,7 @@
 import { html } from 'lit-html';
 import styles from './login.module.css'
 import { fromEvent } from 'rxjs';
+import { Router } from '../../router';
 
 import UserService from '../../services/user.service';
 
@@ -22,13 +23,11 @@ class LoginElement extends PageComponent {
       const submitter = event.submitter as HTMLElement;
       
       if (submitter.dataset.type === 'google') {
-
         return;
       }
       
       
       const elements = Array.from(event.target.elements as HTMLFormControlsCollection);
-      
       const formData: any = elements
                         .filter( (item: any) => !!item.name )
                         .reduce( (data: any, element: any) => Object.assign(data, { [element.name]: element.value }), {})
@@ -37,17 +36,11 @@ class LoginElement extends PageComponent {
         this.disableBtns = true;
         this.requestUpdate();
         const result = await UserService.login(formData.username, formData.password)
-        console.dir(result);
-        if (result.user){
-         console.dir(await result.user.getIdToken());
-        } else {
-          console.log('no user');
+        if (!result.user){
+         throw new Error('No User Found');
         }
         
-        const session = await UserService.getSession();
-        if (session) {
-          console.dir(await session.json());
-        }
+        await UserService.getSession();
       } catch (err) {
         console.error(err);
         elements.forEach( (element: Element) => {
@@ -56,6 +49,7 @@ class LoginElement extends PageComponent {
       }
       this.disableBtns = false;
       this.requestUpdate();
+      Router.navigate('/'); 
     });
 
     const inputs = this.querySelectorAll('input');
