@@ -1,0 +1,27 @@
+.content {
+  padding-top: 3.5rem;
+}
+
+.content > p {
+  text-align: center;
+}
+
+.title {
+  font-family: 'Racing Sans One', serif;
+  font-weight: 500;
+
+  margin: 1rem;
+  text-align: center;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputs > input {
+  margin: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: none;
+}
