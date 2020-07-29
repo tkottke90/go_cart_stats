@@ -1,7 +1,17 @@
 import FirebaseService from './firebase.service';
 import HTTPService from './http.service';
 
+import { User } from '../classes/user.class';
+
 export default class UserService {
+
+  public static UserPlaceholder: User.Details = {
+    id: '0',
+    email: '',
+    dispayName: '',
+    number: '##',
+    experience: 0
+  }
 
   public static getUser() {
     return FirebaseService.currentUser();
@@ -60,5 +70,9 @@ export default class UserService {
         email: user.email,
         displayName: user.displayName
       }
+  }
+
+  public static getRaces() {
+    
   }
 }
