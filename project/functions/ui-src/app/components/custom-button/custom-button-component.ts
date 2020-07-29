@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import { LitElement, property } from 'lit-element';
-import styles from './header.module.css'
+// import styles from './header.module.css'
 import { fromEvent } from 'rxjs';
 
 const tag = 'custom-button'
@@ -13,6 +13,7 @@ class CustomButtonElement extends LitElement {
   @property({ type: Boolean }) mobileIcon = false;
   @property({ type: Boolean }) noRipple = false;
   @property({ type: String }) align: 'left' | 'center' | 'right' = 'left';
+  @property({ type: String }) padding = '';
 
   firstUpdated() {
     const button = this.shadowRoot!.querySelector('button') as HTMLButtonElement;
@@ -43,7 +44,7 @@ class CustomButtonElement extends LitElement {
           position: relative;
           border: none;
           border-radius: 0.125rem;
-          padding: 0.75rem 1.125rem;
+          padding: ${ this.padding ? this.padding : '0.75rem 1.125rem'};
           font-size: var(--custom-button-font, 1rem);
           text-transform: uppercase;
           cursor: pointer;
@@ -220,8 +221,6 @@ class CustomButtonElement extends LitElement {
     let y = e.pageY - targetRect.top - window.scrollY - (rippleRect.height / 2);
 
     ripple.classList.remove('show');
-    let top = target.clientTop;
-    let left = target.clientLeft;;
 
     ripple.style.top = y + 'px';
     ripple.style.left = x + 'px';
