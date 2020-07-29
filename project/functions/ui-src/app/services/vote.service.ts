@@ -3,26 +3,27 @@ import { BehaviorSubject }  from 'rxjs';
 
 import { Votes } from '../classes/votes.class';
 
-export default class RaceService {
+export default class VoteService {
 
   private static baseUrl = '/votes';
 
   public static VotesPlaceholder: Votes.Vote = {
     userId: '',
     ballot: '',
+    date: '',
   }
 
   public static votes: BehaviorSubject<Votes.Vote[]> = new BehaviorSubject<Votes.Vote[]>([]);
 
-  public static getRace(id: string) {
+  public static getVote(id: string) {
     return HTTPService.get(`${this.baseUrl}/${id}`).toPromise();
   }
 
-  public static createRace(data: any) {
+  public static createVote(data: any) {
     return HTTPService.post(`${this.baseUrl}`, data).toPromise();
   }
 
-  public static findRaces(query: any) {
+  public static findVotes(query: any) {
     return new Promise( async (resolve, reject) => {
       const result = await HTTPService.post(this.baseUrl, query).toPromise();
 
