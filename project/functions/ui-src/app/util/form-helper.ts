@@ -30,9 +30,27 @@ export class FormHelper {
       .reduce(this.reduceArrayToObject);
   }
 
+  getJsonFromElement(form: HTMLFormElement) {
+    const elements = Array.from(form.elements);
+
+    return elements.map(this.getValue)
+      .reduce(this.reduceArrayToObject);
+  }
+
   isValid(event: Event) {
     const form = event.target as HTMLFormElement;
+
     const elements = Array.from(form.querySelectorAll('[name]')) as HTMLElement[];
+
+    return elements.map(this.getValidity).filter((i) => {
+      return i !== null;
+    }).every((i) => {
+      return i;
+    });
+  }
+
+  isValidFromElement(form: HTMLFormElement) {
+    const elements = Array.from(form.elements) as HTMLElement[];
 
     return elements.map(this.getValidity).filter((i) => {
       return i !== null;
@@ -54,7 +72,7 @@ export class FormHelper {
     }
   }
 
-  private getValidity(element: HTMLElement): boolean {
+  public getValidity(element: HTMLElement): boolean {
     const type = element.getAttribute('type');
     const dataType = element.dataset.type;
     const compare = dataType ? dataType : type;
@@ -75,7 +93,7 @@ export class FormHelper {
     return false;
   }
 
-  private getValue(element: Element): any {
+  public getValue(element: Element): any {
     const type = element.getAttribute('type');
     const key: string = element.getAttribute('name') as string;
 
