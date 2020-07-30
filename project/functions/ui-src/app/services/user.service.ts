@@ -78,7 +78,7 @@ export default class UserService {
       this.$user.next(details)
 
       return details;
-      }
+  }
 
   public static async getAllUsers() {
     const response = await HTTPService.post('/users', {}).toPromise();
@@ -90,7 +90,15 @@ export default class UserService {
     return await response.json();
   }
 
-  public static getRaces() {
-    
+  public static async setUserDetails(details: User.Details) {
+    const response = await HTTPService.patch(`/users/${details.id}`, { ...details }).toPromise();
+
+    if (response.status >= 400) {
+      throw Error(`Error Updating User - ${await response.json()}`);
+    }
+
+    this.$user.next(details);
+
+    return true;
   }
 }
