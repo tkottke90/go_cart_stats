@@ -48,6 +48,14 @@ class HomeElement extends PageComponent {
   }
 
   onActivated() {
+    UserService.$user.subscribe( user => {
+      if (!user) {
+        Router.navigate('/login');
+      }
+
+      this.user = user;
+    });
+    
     UserService
     .getUserDetails()
     .then( async user => {
@@ -151,7 +159,7 @@ class HomeElement extends PageComponent {
       <section class="${styles.info}">
         <h3 class=${styles.number}>19</h3>
         <div class=${styles.detail}>
-          <h3 class="${styles.name}" text-ellipsis>${this.user.dispayName ? this.user.dispayName : this.user.email }</h3>
+          <h3 class="${styles.name}" text-ellipsis>${this.user.displayName ? this.user.displayName : this.user.email }</h3>
           ${this.user.nickname ? html`<h5 class="${styles.nname}" text-ellipsis >${this.user.nickname ? this.user.nickname : ''}</h5>` : ''}
           <h4 class="${styles.exp}">Experience: ${this.user.experience} Years</h4>
           ${ this.user.rival ? html`<h4 class="${styles.rival}">Rival: Joe Kottke</h4>` : '' }
