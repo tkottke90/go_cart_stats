@@ -50,7 +50,7 @@ class AuthRoute extends BaseClass {
       const cookieOptions = {
         maxAge: expiresIn,
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === 'production'
       };
 
       context.response.cookie('session', sessionCookie, cookieOptions);
