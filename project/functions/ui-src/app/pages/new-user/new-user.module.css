@@ -1,5 +1,6 @@
 .content {
   padding-top: 3.5rem;
+  height: calc(100%);
 }
 
 .content > p {
@@ -19,9 +20,29 @@
   flex-direction: column;
 }
 
-.inputs > input {
+.inputs > input, .inputs > select {
   margin: 1rem;
   padding: 0.5rem;
   border-radius: 0.25rem;
   box-shadow: none;
+
+  border: 1.5px solid var(--theme-primary);
+  color: var(--foreground);
+}
+
+.inputs > input[invalid] {
+  border: 1px solid var(--theme-warn, red);
+  color: var(--theme-warn, red);
+}
+
+.submit {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  padding: 0.5rem;
+}
+
+.submitBtn {
+  margin: 1rem 0.5rem 0 auto; 
 }
