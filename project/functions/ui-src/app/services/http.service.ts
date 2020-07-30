@@ -22,12 +22,12 @@ export default class HTTPService {
   }
 
   public static patch(url: string, data: any, options: Headers = new Headers()){
-    const request: RequestInit = { body: data, headers: options, method: 'PATCH' }    
+    const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'PATCH' }    
     return fromFetch(url, request);
   }
   
   public static put(url: string, data: any, options: Headers = new Headers()){
-    const request: RequestInit = { body: data, headers: options, method: 'PUT' }    
+    const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'PUT' }    
     return fromFetch(url, request);
   }
 
