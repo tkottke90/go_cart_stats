@@ -68,12 +68,16 @@ export default class UserService {
       }
 
       const userDetails = await response.json();
-  
-      return {
+      const details = {
         ...userDetails,
         id: user.uid,
         email: user.email,
         displayName: user.displayName
+      };
+
+      this.$user.next(details)
+
+      return details;
       }
   }
 
