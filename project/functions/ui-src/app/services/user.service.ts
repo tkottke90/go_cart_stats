@@ -2,6 +2,7 @@ import FirebaseService from './firebase.service';
 import HTTPService from './http.service';
 
 import { User } from '../classes/user.class';
+import { BehaviorSubject } from 'rxjs';
 
 export default class UserService {
 
@@ -12,6 +13,12 @@ export default class UserService {
     number: '##',
     experience: 0
   }
+
+export default class UserService {
+
+  public static UserPlaceholder = UserPlaceholder;
+
+  public static $user: BehaviorSubject<User.Details> = new BehaviorSubject<User.Details>(UserPlaceholder);
 
   public static getUser() {
     return FirebaseService.currentUser();
