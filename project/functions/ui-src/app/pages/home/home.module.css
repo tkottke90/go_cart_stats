@@ -32,6 +32,14 @@
   box-shadow: var(--elevation-1);
 }
 
+.exp, .rival {
+  font-size: 0.85rem;
+}
+
+.rival {
+  color: var(--theme-accent);
+}
+
 .actions {
   display: flex;
   justify-content: space-around;
