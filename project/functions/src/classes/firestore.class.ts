@@ -53,9 +53,6 @@ const queryDocument = (collection: admin.firestore.CollectionReference, query: a
     }
   });
 
-  console.log('docAndQuery');
-  console.dir(docAndQuery);
-
   return docAndQuery ? docAndQuery : collection;
 }
 
@@ -104,7 +101,6 @@ export default class FirestoreClass extends BaseRoute {
         const result = await query.get();
 
         const data: any[] = result.docs.map( (doc: admin.firestore.DocumentData) => {
-          console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
           return doc.data();
         });
 
@@ -196,8 +192,10 @@ export default class FirestoreClass extends BaseRoute {
   public patch = (context: IContext) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const dataLength = Object.keys(context.data).length;
-        const modelValidation = this.Model.validate(context.data, { presence: 'optional', abortEarly: false, convert: true });
+        const data = JSON.parse(context.data);
+        const dataLength = Object.keys(data).length;
+
+        const modelValidation = this.Model.validate(data, { presence: 'optional', abortEarly: false, convert: true });
         if (modelValidation.error) {
           reject({
             message: modelValidation.error.details.map( item => item.message ),
@@ -209,13 +207,13 @@ export default class FirestoreClass extends BaseRoute {
         if (dataLength === 0) {
           reject({
             message: 'No data provided',
-            data: context.data
+            data: data
           });
           return;
         }
 
         const ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${context.params.id}`)
-        await ref.update(context.data);
+        await ref.update(data);
 
         const result = await ref.get();
 
