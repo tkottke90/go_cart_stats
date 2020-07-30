@@ -79,6 +79,15 @@ export default class UserService {
 
       return details;
       }
+
+  public static async getAllUsers() {
+    const response = await HTTPService.post('/users', {}).toPromise();
+    
+    if (response.status >= 400) {
+      throw Error(`Error Updating User - ${await response.json()}`);
+    }
+
+    return await response.json();
   }
 
   public static getRaces() {
