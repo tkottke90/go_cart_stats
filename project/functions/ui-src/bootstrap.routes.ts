@@ -30,6 +30,24 @@ const routes: Route[] = [
 
       next();
     }
+  }),
+  new Route({
+    icon: 'new',
+    label: 'New-User',
+    path: '/new-user',
+    promise: () => import('./app/pages/new-user/new-user'),
+    render: true,
+    tag: 'new-user-component',
+    before: async (route, context, next) => {
+      const allowed = await authGuard();
+
+      if (!allowed) {
+        Router.navigate('/login');
+        return;
+      }
+
+      next();
+    }
   })
 ];
 
