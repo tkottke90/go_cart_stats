@@ -4,15 +4,13 @@ import HTTPService from './http.service';
 import { User } from '../classes/user.class';
 import { BehaviorSubject } from 'rxjs';
 
-export default class UserService {
-
-  public static UserPlaceholder: User.Details = {
-    id: '0',
-    email: '',
-    dispayName: '',
-    number: '##',
-    experience: 0
-  }
+const UserPlaceholder: User.Details = {
+  id: '0',
+  email: '',
+  displayName: '',
+  number: '##',
+  experience: 0
+}
 
 export default class UserService {
 
