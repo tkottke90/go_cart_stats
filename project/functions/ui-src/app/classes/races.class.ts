@@ -3,6 +3,7 @@ export namespace Races {
   export interface Lap {
     time: string;
     bestLap: boolean;
+    position?: number;
   }
 
   export interface Entry {
