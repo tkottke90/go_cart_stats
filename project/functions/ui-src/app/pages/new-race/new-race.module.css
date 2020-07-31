@@ -1,0 +1,116 @@
+.content {
+  padding-top: 3.5rem;
+  height: calc(100%);
+}
+
+.content > p {
+  text-align: center;
+}
+
+.title {
+  font-family: 'Racing Sans One', serif;
+  font-weight: 500;
+
+  margin: 1rem;
+  text-align: center;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputs input, .inputs > select {
+  margin: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: none;
+
+  border: 1.5px solid var(--theme-primary);
+  color: var(--foreground);
+}
+
+.inputs input[invalid] {
+  border: 1px solid var(--theme-warn, red);
+  color: var(--theme-warn, red);
+}
+
+.overall {
+  display: flex;
+  width: 100%;
+}
+
+.overall > input {
+  flex: 1;
+  width: 0;
+}
+
+.overall > input[name="totalTime"] {
+  flex: 7;
+}
+
+
+.lapRow {
+  width: 100%;
+  display: grid;
+  padding: 0.25rem;
+  
+  display: flex;
+}
+
+.lapRow > input, .lapRow > .header {
+  margin: 0 0.25rem;
+
+  font-size: 0.85rem;
+}
+
+.lapRow > input {
+  width: 0;
+}
+
+.lapRow > .posCol {
+  flex: 0 1 5rem;
+}
+
+.lapRow > input.posCol {
+  text-align: center;
+}
+
+.lapRow > .timeCol {
+  flex: 0 1 13rem;
+}
+
+.lapRow > .blCol {
+  flex: 0 1 7rem;
+  text-align: end;
+}
+
+.lapRow > input[type="checkbox"] {
+  margin: auto;
+  transform: scale(1.5);
+}
+
+.lapRow > custom-button {
+  width: 100%;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin-top: 0.5rem;
+}
+
+.actions > custom-button {
+  margin: 0 0.25rem
+}
+
+.submit {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  padding: 0.5rem;
+}

@@ -29,6 +29,15 @@ const routes: Route[] = [
     render: true,
     tag: 'new-user-component',
     before: async (route, context, next) => await authGuard(route, context, next)
+  }),
+  new Route({
+    icon: 'race',
+    label: 'New Race',
+    path: '/new-race',
+    promise: () => import('./app/pages/new-race/new-race'),
+    render: true,
+    tag: 'new-race-component',
+    before: async (route, context, next) => await authGuard(route, context, next)
   })
 ];
 
