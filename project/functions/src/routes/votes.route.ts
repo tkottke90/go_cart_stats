@@ -5,6 +5,7 @@ import VoteModel from '../models/vote.model';
 import { IHooksArray } from "../interfaces/routing.interfaces";
 
 import sessionHook from '../hooks/verify-session.hook';
+import canAccess from '../hooks/canAccess.hook';
 
 class VotesRoute extends FirestoreClass {
 
@@ -13,9 +14,9 @@ class VotesRoute extends FirestoreClass {
     find: [],
     get: [],
     create: [],
-    update: [],
-    updateOrCreate: [],
-    delete: []
+    update: [canAccess()],
+    updateOrCreate: [canAccess()],
+    delete: [canAccess()]
   }
 
   private afterHooks: IHooksArray = {

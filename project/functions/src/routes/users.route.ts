@@ -5,6 +5,7 @@ import UserModel from '../models/users.model';
 import { IHooksArray } from "../interfaces/routing.interfaces";
 
 import sessionHook from '../hooks/verify-session.hook';
+import canAccess from '../hooks/canAccess.hook';
 
 class UserRoute extends FirestoreClass {
 
@@ -15,7 +16,7 @@ class UserRoute extends FirestoreClass {
     create: [],
     update: [],
     updateOrCreate: [],
-    delete: []
+    delete: [canAccess()]
   }
 
   private afterHooks: IHooksArray = {
