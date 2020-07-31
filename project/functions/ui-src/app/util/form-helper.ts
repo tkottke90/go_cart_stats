@@ -121,6 +121,14 @@ export class FormHelper {
 
     return null;
   }
+
+  public leadingZeroString(number: number) {
+    if (number > -10 && number < 10) {
+      return `0${number}`
+    }
+
+    return `${number}`;
+  }
 }
 
 export default new FormHelper();
