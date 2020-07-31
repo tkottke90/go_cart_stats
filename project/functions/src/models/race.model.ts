@@ -4,6 +4,7 @@ export default Joi.object({
     userId: Joi.string(),
     date: Joi.date(),
     cartNumber: Joi.number().positive(),
+    trackId: Joi.string().optional(),
     laps: Joi.array().items(Joi.object({
         display: Joi.string().pattern(/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/),
         position: Joi.string().allow(''),
