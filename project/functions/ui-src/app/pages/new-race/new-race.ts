@@ -3,11 +3,14 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg'
 import styles from './new-race.module.css'
 import { fromEvent } from 'rxjs';
 
+declare var Tesseract: any;
+
 import UserService from '../../services/user.service';
 import TrackService from '../../services/track.service';
 
 import { User } from '../../classes/user.class';
 import { Tracks } from '../../classes/track.class';
+import { Races } from '../../classes/races.class';
 
 import { Router } from '../../router';
 
@@ -15,6 +18,9 @@ import { PageComponent } from '../../components/page-component';
 import '../../components/header/header-component';
 import '../../components/custom-button/custom-button-component';
 import formHelper from '../../util/form-helper';
+
+const totalRegex = /\s([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\.[0-9]{1,2})/;
+const lapRegex = /([0-9]{2})\s([0-9]{1,2}:?[0-9]{1,2}\.?[0-9]{1,2})\s?([0-9]?)(BL)?/;
 
 const tag = 'new-race-component';
 
@@ -25,6 +31,21 @@ class NewRaceComponent extends PageComponent {
   private tracks: Tracks.Track[] = [ TrackService.TrackPlaceholder ];
 
   private time: string = '';
+  private totalTime = '';
+  private laps: Races.Lap[] = [];
+
+  private worker: any;
+
+  constructor() {
+    super();
+
+    this.worker = Tesseract.createWorker({
+      workerPath: 'https://unpkg.com/tesseract.js@v2.0.0/dist/worker.min.js',
+      langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+      corePath: 'https://unpkg.com/tesseract.js-core@v2.0.0/tesseract-core.wasm.js',
+      logger: (m: any) => console.log(m)
+    });
+  }
 
   async firstUpdated() {
     UserService.$user.subscribe( user => {
@@ -68,9 +89,9 @@ class NewRaceComponent extends PageComponent {
     });
   }
 
-  generateLapRow(time: string = '', bestLap: boolean = false, position: string = '') {
+  generateLapRow(time: string = '', bestLap: boolean = false, position: string = '', index: number = -1) {
     return html`
-      <div class="${styles.lapRow}">
+      <div class="${styles.lapRow}" data-index="index">
         <input
           class="${styles.posCol}"
           name="position"
@@ -95,6 +116,17 @@ class NewRaceComponent extends PageComponent {
           type="checkbox"
           ?checked=${bestLap}
         />
+
+        <custom-button
+          class="${styles.rmBtn}"
+          ?disabled=${index === -1}
+          data-lapIndex="${index}"
+          padding="0"
+        >
+          <svg slot="prefixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+          </svg>
+        </custom-button>
       </div>
     `;
   }
@@ -102,6 +134,8 @@ class NewRaceComponent extends PageComponent {
   render() {
     const time = this.time || this.getCurrentDateTime();
     this.time = time;
+
+    console.dir(this.laps);
 
     return html`
      <header-component>
@@ -137,6 +171,7 @@ class NewRaceComponent extends PageComponent {
             type="text"
             name="totalTime"
             placeholder="Total Time"
+            value="${this.totalTime}"
             pattern="[0-9]{1,2}:[0-9]{1,2}\.?[0-9]{1,3}"
             required
           />
@@ -157,7 +192,9 @@ class NewRaceComponent extends PageComponent {
             <p class="${styles.header} ${styles.posCol}" >Position</p>
             <p class="${styles.header} ${styles.timeCol}" >Lap Time</p>
             <p class="${styles.header} ${styles.blCol}" >Best Lap</p>
+            <p class="${styles.rmBtn}"></p>
           </div>
+          ${this.laps.map( (lap: Races.Lap, index: number) => this.generateLapRow(lap.time, lap.bestLap, lap.position, index) )}
           ${this.generateLapRow()}
           <div class=${styles.lapRow}>
             <custom-button
@@ -179,6 +216,7 @@ class NewRaceComponent extends PageComponent {
             label="Scan"
             type="outline"
             padding="0.5rem"
+            @click=${this.scanImage}
             >
               <svg slot="suffixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M17,22V20H20V17H22V20.5C22,20.89 21.84,21.24 21.54,21.54C21.24,21.84 20.89,22 20.5,22H17M7,22H3.5C3.11,22 2.76,21.84 2.46,21.54C2.16,21.24 2,20.89 2,20.5V17H4V20H7V22M17,2H20.5C20.89,2 21.24,2.16 21.54,2.46C21.84,2.76 22,3.11 22,3.5V7H20V4H17V2M7,2V4H4V7H2V3.5C2,3.11 2.16,2.76 2.46,2.46C2.76,2.16 3.11,2 3.5,2H7M13,17.25L17,14.95V10.36L13,12.66V17.25M12,10.92L16,8.63L12,6.28L8,8.63L12,10.92M7,14.95L11,17.25V12.66L7,10.36V14.95M18.23,7.59C18.73,7.91 19,8.34 19,8.91V15.23C19,15.8 18.73,16.23 18.23,16.55L12.75,19.73C12.25,20.05 11.75,20.05 11.25,19.73L5.77,16.55C5.27,16.23 5,15.8 5,15.23V8.91C5,8.34 5.27,7.91 5.77,7.59L11.25,4.41C11.5,4.28 11.75,4.22 12,4.22C12.25,4.22 12.5,4.28 12.75,4.41L18.23,7.59Z" />
@@ -198,6 +236,78 @@ class NewRaceComponent extends PageComponent {
     `
   }
 
+  private scanImage(event: Event) {
+    console.log('Scan Image');
+    const input = document.createElement('input') as HTMLInputElement;
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.setAttribute('capture', 'environment');
+
+    fromEvent(input, 'change')
+      .subscribe( async (event: Event) => {
+        // Get Image
+        const target = event.target as HTMLInputElement;
+        const files = target.files as FileList;
+
+        if (files.length === 0) {
+          return;
+        }
+
+        const file = files[0] as File;
+
+        // Create Worker
+        await this.worker.load();
+        await this.worker.loadLanguage('eng');
+        await this.worker.initialize('eng');
+        const result = await this.worker.recognize(file);
+
+        // Review results
+
+        console.dir(result);
+
+        const { data: { lines } } = result;
+
+        lines.forEach( (line: any) => {
+          console.log(line.text);
+
+          const totalPart = line.text.match(totalRegex);
+          const lineParts = line.text.match(lapRegex);
+          console.dir(lineParts);
+          if (!lineParts) {
+            return;
+          }
+
+          const lapIndex = lineParts[1];
+          const time = lineParts[2];
+          const position = lineParts[3];
+          const bestLap = !!lineParts[4];
+
+          console.table({
+            lapIndex,
+            time,
+            position,
+            bestLap: !!bestLap,
+            total: totalPart ? totalPart[0] : false
+          })
+
+          if (totalPart) {
+            this.totalTime = totalPart[0]
+          }
+
+          this.laps.push({
+            time: lineParts[2],
+            position: lineParts[3],
+            bestLap: !!lineParts[4]
+          });
+
+        });
+
+        this.requestUpdate();
+      });
+  
+    input.click();
+  }
+
   private async submit(event: Event) {
     const form = this.querySelector('form') as HTMLFormElement;
     const elements = Array.from(form.elements) as HTMLElement[];
@@ -207,6 +317,10 @@ class NewRaceComponent extends PageComponent {
 
     const valid = formHelper.isValidFromElement(form);
 
+    console.dir({
+      formData,
+      valid
+    })
 
     if (valid) {
       this.loading = true;

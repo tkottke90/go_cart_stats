@@ -82,7 +82,7 @@
 
 .lapRow > .blCol {
   flex: 0 1 7rem;
-  text-align: end;
+  text-align: center;
 }
 
 .lapRow > input[type="checkbox"] {
@@ -93,6 +93,12 @@
 .lapRow > custom-button {
   width: 100%;
   margin: 0.5rem 0 1rem 0;
+}
+
+.lapRow > .rmBtn {
+  flex: 0 1 4rem;
+  width: 0;
+  margin: auto;
 }
 
 .actions {
