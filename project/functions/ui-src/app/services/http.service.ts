@@ -17,16 +17,19 @@ export default class HTTPService {
   }
 
   public static post(url: string, data: any, options: Headers = new Headers()){
+    options.set('Content-Type', 'application/json;charset=UTF-8');
     const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'POST' } 
     return fromFetch(url, request);
   }
 
   public static patch(url: string, data: any, options: Headers = new Headers()){
+    options.set('Content-Type', 'application/json;charset=UTF-8');
     const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'PATCH' }    
     return fromFetch(url, request);
   }
   
   public static put(url: string, data: any, options: Headers = new Headers()){
+    options.set('Content-Type', 'application/json;charset=UTF-8');
     const request: RequestInit = { body: JSON.stringify(data), headers: options, method: 'PUT' }    
     return fromFetch(url, request);
   }
