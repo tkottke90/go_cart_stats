@@ -32,7 +32,9 @@ class NewRaceComponent extends PageComponent {
 
   private time: string = '';
   private totalTime = '';
-  private laps: Races.Lap[] = [];
+  private laps: Races.Lap[] = [
+    { time: '', bestLap: false, position: '' }
+  ];
 
   private worker: any;
 
@@ -91,13 +93,14 @@ class NewRaceComponent extends PageComponent {
 
   generateLapRow(time: string = '', bestLap: boolean = false, position: string = '', index: number = -1) {
     return html`
-      <div class="${styles.lapRow}" data-index="index">
+      <div class="${styles.lapRow}"  @input=${this.updateLap}>
         <input
           class="${styles.posCol}"
           name="position"
           type="number"
           value=${position}
           placeholder="5"
+          data-lapIndex="${index}"
         />
 
         <input 
@@ -106,8 +109,8 @@ class NewRaceComponent extends PageComponent {
           type="text"
           pattern="[0-9]{1,2}:[0-9]{1,2}\.?[0-9]{1,3}"
           value="${time}"
-          required
           placeholder="00:45.765"
+          data-lapIndex="${index}"
         />
 
         <input
@@ -115,6 +118,7 @@ class NewRaceComponent extends PageComponent {
           name="bestLap"
           type="checkbox"
           ?checked=${bestLap}
+          data-lapIndex="${index}"
         />
 
         <custom-button
@@ -122,6 +126,7 @@ class NewRaceComponent extends PageComponent {
           ?disabled=${index === -1}
           data-lapIndex="${index}"
           padding="0"
+          @click=${this.removeLap}
         >
           <svg slot="prefixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
               <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -195,7 +200,6 @@ class NewRaceComponent extends PageComponent {
             <p class="${styles.rmBtn}"></p>
           </div>
           ${this.laps.map( (lap: Races.Lap, index: number) => this.generateLapRow(lap.time, lap.bestLap, lap.position, index) )}
-          ${this.generateLapRow()}
           <div class=${styles.lapRow}>
             <custom-button
               label="Add Lap"
@@ -203,6 +207,7 @@ class NewRaceComponent extends PageComponent {
               color="primary"
               align="center"
               padding="0.5rem"
+              @click=${this.addLap}
             >
               <svg slot="prefixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
@@ -234,6 +239,42 @@ class NewRaceComponent extends PageComponent {
         </form>
      </main>
     `
+  }
+
+  private addLap(event: Event) {
+    this.laps.push({
+      position: '',
+      time: '',
+      bestLap: false
+    });
+    this.requestUpdate()
+  }
+
+  private updateLap(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const index = target.dataset.lapindex as string;
+
+    if (parseInt(index) === -1) {
+      return;
+    }
+
+    const i = parseInt(index);
+
+    this.laps[i] = Object.assign(this.laps[i], formHelper.getValue(target));
+  }
+
+  private removeLap(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const lapIndex = target.dataset.lapindex as string;
+
+    console.dir({
+      dataset: target,
+      lIndex: lapIndex,
+      index: parseInt(lapIndex)
+    })
+
+    this.laps.splice(parseInt(lapIndex), 1);
+    this.requestUpdate();
   }
 
   private scanImage(event: Event) {
@@ -292,6 +333,11 @@ class NewRaceComponent extends PageComponent {
 
           if (totalPart) {
             this.totalTime = totalPart[0]
+          }
+
+          // Remove laps list is a single record with no time, remove it
+          if(this.laps.length === 1 && !this.laps[0].time){
+            this.laps.pop();
           }
 
           this.laps.push({

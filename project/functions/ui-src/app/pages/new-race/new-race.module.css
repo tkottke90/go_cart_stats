@@ -101,6 +101,10 @@
   margin: auto;
 }
 
+.rmBtn > svg {
+  pointer-events: none;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

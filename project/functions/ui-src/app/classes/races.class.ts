@@ -1,6 +1,7 @@
 export namespace Races { 
   
   export interface Lap {
+    [key: string]: any;
     time: string;
     bestLap: boolean;
     position?: string;
