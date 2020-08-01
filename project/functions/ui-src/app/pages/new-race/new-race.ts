@@ -149,7 +149,7 @@ class NewRaceComponent extends PageComponent {
 
     return html`
      <header-component>
-      <custom-button slot="menu" color="on-primary" padding="0">
+      <custom-button slot="menu" color="on-primary" padding="0" @click=${this.navgiateToHome}>
         <svg slot="prefixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
           <path fill="currentColor" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
         </svg>
@@ -411,6 +411,10 @@ class NewRaceComponent extends PageComponent {
     const min = formHelper.leadingZeroString($date.getMinutes());
 
     return `${year}-${month}-${date}T${hour}:${min}`;
+  }
+
+  private navgiateToHome() {
+    Router.navigate('/');
   }
 }
 

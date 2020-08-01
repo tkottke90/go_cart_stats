@@ -132,7 +132,7 @@ class HomeElement extends PageComponent {
     <div id="votes-table" class="${styles.tableData}">
       <header class="${styles.tableHeader}">
         <h4 class="${styles.dateCol}">Date</h4>
-        <h4 class="${styles.voteCol}">Time</h4>
+        <h4 class="${styles.voteCol}">Vote</h4>
       </header>
       <section>
         ${ voteArr.map( (vote: Votes.Vote) => {
@@ -169,7 +169,7 @@ class HomeElement extends PageComponent {
         </div>
       </section>
       <section class="${styles.actions}">
-        <custom-button padding="0.25rem" type="raised" label="Add Race"></custom-button>
+        <custom-button padding="0.25rem" type="raised" label="Add Race" @click=${this.navigateToNewRace}></custom-button>
         <custom-button padding="0.25rem" type="raised" label="Voting"></custom-button>
       </section>
       <section class="${styles.races} ${styles.table}">
@@ -187,6 +187,10 @@ class HomeElement extends PageComponent {
       <h3>Loading</h3>
      </section>
     `
+  }
+
+  private navigateToNewRace() {
+    Router.navigate('/new-race');
   }
 }
 
