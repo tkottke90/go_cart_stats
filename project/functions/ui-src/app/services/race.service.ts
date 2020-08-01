@@ -13,7 +13,7 @@ export default class RaceService {
     totalTime: '',
     date: '',
     bestTime: '',
-    times: []
+    laps: []
   }
 
   public static races: BehaviorSubject<Races.Entry[]> = new BehaviorSubject<Races.Entry[]>([]);
@@ -23,7 +23,7 @@ export default class RaceService {
   }
 
   public static createRace(data: any) {
-    return HTTPService.post(`${this.baseUrl}`, data).toPromise();
+    return HTTPService.post(`${this.baseUrl}/create`, data).toPromise();
   }
 
   public static findRaces(query: any) {
