@@ -5,14 +5,12 @@ export default Joi.object({
     date: Joi.date(),
     cartNumber: Joi.number().positive(),
     trackId: Joi.string().optional(),
+    totalTime: Joi.string().allow(''),
+    bestTime: Joi.string().allow(''),
     laps: Joi.array().items(Joi.object({
-        display: Joi.string().pattern(/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/),
         position: Joi.string().allow(''),
-        timeComponents: Joi.object({
-            minutes: Joi.number().min(0),
-            seconds: Joi.number().min(0),
-            milliseconds: Joi.number().min(0)
-        }),
+        time: Joi.string().allow(''),
         bestLap: Joi.boolean()
-    }))
+    })),
+    invalid: Joi.boolean()
 });

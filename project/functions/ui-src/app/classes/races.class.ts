@@ -9,12 +9,12 @@ export namespace Races {
 
   export interface Entry {
     userId: string;
-    date: string;
+    date: string | Date;
     cartNumber: string;
     totalTime: string;
     bestTime: string;
-    track?: string;
-    times: Lap[]
+    trackId?: string;
+    laps: Lap[]
     invalid?: boolean;
   }
 }
