@@ -52,11 +52,13 @@ export class FormHelper {
   isValidFromElement(form: HTMLFormElement) {
     const elements = Array.from(form.elements) as HTMLElement[];
 
-    return elements.map(this.getValidity).filter((i) => {
-      return i !== null;
-    }).every((i) => {
-      return i;
-    });
+    return elements
+      .filter( (i: any) => i.type !== 'datetime-local')
+      .map(this.getValidity).filter((i) => {
+        return i !== null;
+      }).every((i) => {
+        return i;
+      });
   }
 
   reduceArrayToObject(prev: any, current: any) {
@@ -93,6 +95,16 @@ export class FormHelper {
     return false;
   }
 
+  public markInputInvalid(event: Event) {
+    const target = event.target as HTMLInputElement;
+    target.setAttribute('invalid', '');
+  }
+
+  public markInputAsValid(event: Event) {
+    const target = event.target as HTMLInputElement;
+    target.removeAttribute('invalid');
+  }
+
   public getValue(element: Element): any {
     const type = element.getAttribute('type');
     const key: string = element.getAttribute('name') as string;
@@ -100,6 +112,7 @@ export class FormHelper {
     switch (type) {
       case 'password':
       case 'email':
+      case 'datetime-local':
       case 'text':
         return {
           [key]: (element as HTMLInputElement).value
