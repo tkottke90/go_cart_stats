@@ -30,7 +30,7 @@
   color: var(--foreground);
 }
 
-.inputs input[invalid] {
+.inputs input:invalid {
   border: 1px solid var(--theme-warn, red);
   color: var(--theme-warn, red);
 }
@@ -43,6 +43,10 @@
 .overall > input {
   flex: 1;
   width: 0;
+}
+
+.overall > input[name="cartNumber"] {
+  text-align: center;
 }
 
 .overall > input[name="totalTime"] {

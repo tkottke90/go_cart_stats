@@ -7,6 +7,7 @@ declare var Tesseract: any;
 
 import UserService from '../../services/user.service';
 import TrackService from '../../services/track.service';
+import RaceService from '../../services/race.service';
 
 import { User } from '../../classes/user.class';
 import { Tracks } from '../../classes/track.class';
@@ -101,6 +102,8 @@ class NewRaceComponent extends PageComponent {
           value=${position}
           placeholder="5"
           data-lapIndex="${index}"
+          @invalid=${formHelper.markInputInvalid}
+          @input=${formHelper.markInputAsValid}
         />
 
         <input 
@@ -111,6 +114,8 @@ class NewRaceComponent extends PageComponent {
           value="${time}"
           placeholder="00:45.765"
           data-lapIndex="${index}"
+          @invalid=${formHelper.markInputInvalid}
+          @input=${formHelper.markInputAsValid}
         />
 
         <input
@@ -159,7 +164,6 @@ class NewRaceComponent extends PageComponent {
           autocomplete="now"
           type="datetime-local"
           value="${time}"
-          required
         />
 
         <div class="${styles.overall}">
@@ -177,7 +181,7 @@ class NewRaceComponent extends PageComponent {
             name="totalTime"
             placeholder="Total Time"
             value="${this.totalTime}"
-            pattern="[0-9]{1,2}:[0-9]{1,2}\.?[0-9]{1,3}"
+            pattern="[0-9]{0,2}:?[0-9]{1,2}:[0-9]{1,2}\.?[0-9]{1,3}"
             required
           />
         </div>
@@ -303,9 +307,6 @@ class NewRaceComponent extends PageComponent {
         const result = await this.worker.recognize(file);
 
         // Review results
-
-        console.dir(result);
-
         const { data: { lines } } = result;
 
         lines.forEach( (line: any) => {
@@ -313,26 +314,16 @@ class NewRaceComponent extends PageComponent {
 
           const totalPart = line.text.match(totalRegex);
           const lineParts = line.text.match(lapRegex);
-          console.dir(lineParts);
           if (!lineParts) {
             return;
           }
 
-          const lapIndex = lineParts[1];
           const time = lineParts[2];
           const position = lineParts[3];
           const bestLap = !!lineParts[4];
 
-          console.table({
-            lapIndex,
-            time,
-            position,
-            bestLap: !!bestLap,
-            total: totalPart ? totalPart[0] : false
-          })
-
           if (totalPart) {
-            this.totalTime = totalPart[0]
+            this.totalTime = totalPart[0].trim();
           }
 
           // Remove laps list is a single record with no time, remove it
@@ -341,11 +332,10 @@ class NewRaceComponent extends PageComponent {
           }
 
           this.laps.push({
-            time: lineParts[2],
-            position: lineParts[3],
-            bestLap: !!lineParts[4]
-          });
-
+            time,
+            position,
+            bestLap
+          })
         });
 
         this.requestUpdate();
@@ -358,13 +348,32 @@ class NewRaceComponent extends PageComponent {
     const form = this.querySelector('form') as HTMLFormElement;
     const elements = Array.from(form.elements) as HTMLElement[];
     const formData: any = elements
-                        .filter( (item: any) => !!item.name )
+                        .filter( (item: any) => !!item.name && !['bestLap', 'position', 'time'].includes(item.name) )
+                        .map( (item: any) => { console.log(item.name); return item;})
                         .reduce( (data: any, element: any) => Object.assign(data, formHelper.getValue(element)), {})
 
     const valid = formHelper.isValidFromElement(form);
 
     console.dir({
-      formData,
+      validity: elements.map((item: any) => 
+        `${item.name} => ${formHelper.getValidity(item)}`
+      )
+    })
+
+    const bestTime = this.laps.find( item => item.bestLap );
+    const data: Races.Entry = {
+      userId: this.user.id,
+      date: new Date(formData.date),
+      cartNumber: formData.cartNumber,
+      totalTime: formData.totalTime,
+      bestTime: bestTime ? bestTime.time : 'N/A',
+      laps: this.laps,
+      invalid: false
+    }
+
+
+    console.dir({
+      data,
       valid
     })
 
@@ -372,10 +381,8 @@ class NewRaceComponent extends PageComponent {
       this.loading = true;
       this.requestUpdate();
 
-      const userInfo = Object.assign(this.user, formData, { new: false });
-
       try {
-        await UserService.setUserDetails(userInfo);
+        await RaceService.createRace(data)
       } catch(error) {
         console.error(error);
         this.loading = false;
@@ -388,7 +395,7 @@ class NewRaceComponent extends PageComponent {
       this.requestUpdate();
       // TODO - Add Snackbar Notification of Success
 
-      Router.navigate('/');
+      // Router.navigate('/');
     } else {
       console.error('Invalid Form Submittion');
     }
