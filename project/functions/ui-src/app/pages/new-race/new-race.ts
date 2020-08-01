@@ -145,8 +145,6 @@ class NewRaceComponent extends PageComponent {
     const time = this.time || this.getCurrentDateTime();
     this.time = time;
 
-    console.dir(this.laps);
-
     return html`
      <header-component>
       <custom-button slot="menu" color="on-primary" padding="0" @click=${this.navgiateToHome}>
@@ -271,18 +269,11 @@ class NewRaceComponent extends PageComponent {
     const target = event.target as HTMLInputElement;
     const lapIndex = target.dataset.lapindex as string;
 
-    console.dir({
-      dataset: target,
-      lIndex: lapIndex,
-      index: parseInt(lapIndex)
-    })
-
     this.laps.splice(parseInt(lapIndex), 1);
     this.requestUpdate();
   }
 
   private scanImage(event: Event) {
-    console.log('Scan Image');
     const input = document.createElement('input') as HTMLInputElement;
     input.type = 'file';
     input.accept = 'image/*';
@@ -310,7 +301,6 @@ class NewRaceComponent extends PageComponent {
         const { data: { lines } } = result;
 
         lines.forEach( (line: any) => {
-          console.log(line.text);
 
           const totalPart = line.text.match(totalRegex);
           const lineParts = line.text.match(lapRegex);
@@ -349,16 +339,9 @@ class NewRaceComponent extends PageComponent {
     const elements = Array.from(form.elements) as HTMLElement[];
     const formData: any = elements
                         .filter( (item: any) => !!item.name && !['bestLap', 'position', 'time'].includes(item.name) )
-                        .map( (item: any) => { console.log(item.name); return item;})
                         .reduce( (data: any, element: any) => Object.assign(data, formHelper.getValue(element)), {})
 
     const valid = formHelper.isValidFromElement(form);
-
-    console.dir({
-      validity: elements.map((item: any) => 
-        `${item.name} => ${formHelper.getValidity(item)}`
-      )
-    })
 
     const bestTime = this.laps.find( item => item.bestLap );
     const data: Races.Entry = {
@@ -371,11 +354,6 @@ class NewRaceComponent extends PageComponent {
       invalid: false
     }
 
-
-    console.dir({
-      data,
-      valid
-    })
 
     if (valid) {
       this.loading = true;
