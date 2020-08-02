@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html, TemplateResult } from 'lit-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg'
 import styles from './new-race.module.css'
 import { fromEvent } from 'rxjs';
@@ -18,6 +18,7 @@ import { Router } from '../../router';
 import { PageComponent } from '../../components/page-component';
 import '../../components/header/header-component';
 import '../../components/custom-button/custom-button-component';
+import '../../components/dialog/dialog';
 import formHelper from '../../util/form-helper';
 
 const totalRegex = /\s([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\.[0-9]{1,2})/;
@@ -28,6 +29,7 @@ const tag = 'new-race-component';
 class NewRaceComponent extends PageComponent {
 
   private loading = false;
+  private dialogContent: TemplateResult = html``;
   private user: User.Details = UserService.UserPlaceholder;
   private tracks: Tracks.Track[] = [ TrackService.TrackPlaceholder ];
 
@@ -46,7 +48,31 @@ class NewRaceComponent extends PageComponent {
       workerPath: 'https://unpkg.com/tesseract.js@v2.0.0/dist/worker.min.js',
       langPath: 'https://tessdata.projectnaptha.com/4.0.0',
       corePath: 'https://unpkg.com/tesseract.js-core@v2.0.0/tesseract-core.wasm.js',
-      logger: (m: any) => console.log(m)
+      logger: (m: any) => {
+        console.log(m)
+      
+        const statusMessage: { [key: string]: string } = {
+          "loading tesseract core": "Loading Module",
+          "initializing tesseract": "Initializing",
+          "loading language traineddata": "Loading Configurations",
+          "initializing api": "Warming Up",
+          "recognizing text": "Scanning"
+        }
+
+        const message = statusMessage[m.status] || 'Loading';
+        const percentage = Math.floor(m.progress * 100);
+        console.dir({ string: m.progress, percentage })
+        const progress = message === 'Scanning' ? html` <span>${percentage}%</span>` : '';
+
+        this.dialogContent = html`
+          <h3 slot="header" class="${styles.scanningHeader}">Scanning Image</h3>
+          <div class="${styles.scanningBody}">
+            <h4>${message}${progress}</h4>
+          </div>
+        `
+
+        this.requestUpdate();
+      }
     });
   }
 
@@ -224,6 +250,7 @@ class NewRaceComponent extends PageComponent {
             type="outline"
             padding="0.5rem"
             @click=${this.scanImage}
+            .disabled=${this.loading}
             >
               <svg slot="suffixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M17,22V20H20V17H22V20.5C22,20.89 21.84,21.24 21.54,21.54C21.24,21.84 20.89,22 20.5,22H17M7,22H3.5C3.11,22 2.76,21.84 2.46,21.54C2.16,21.24 2,20.89 2,20.5V17H4V20H7V22M17,2H20.5C20.89,2 21.24,2.16 21.54,2.46C21.84,2.76 22,3.11 22,3.5V7H20V4H17V2M7,2V4H4V7H2V3.5C2,3.11 2.16,2.76 2.46,2.46C2.76,2.16 3.11,2 3.5,2H7M13,17.25L17,14.95V10.36L13,12.66V17.25M12,10.92L16,8.63L12,6.28L8,8.63L12,10.92M7,14.95L11,17.25V12.66L7,10.36V14.95M18.23,7.59C18.73,7.91 19,8.34 19,8.91V15.23C19,15.8 18.73,16.23 18.23,16.55L12.75,19.73C12.25,20.05 11.75,20.05 11.25,19.73L5.77,16.55C5.27,16.23 5,15.8 5,15.23V8.91C5,8.34 5.27,7.91 5.77,7.59L11.25,4.41C11.5,4.28 11.75,4.22 12,4.22C12.25,4.22 12.5,4.28 12.75,4.41L18.23,7.59Z" />
@@ -239,6 +266,9 @@ class NewRaceComponent extends PageComponent {
             ></custom-button>
           </div>
         </form>
+        <dialog-component ?open=${this.loading}>
+          ${this.dialogContent}
+        </dialog-component>
      </main>
     `
   }
@@ -281,6 +311,9 @@ class NewRaceComponent extends PageComponent {
 
     fromEvent(input, 'change')
       .subscribe( async (event: Event) => {
+        this.loading = true;
+        this.requestUpdate();
+
         // Get Image
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;
@@ -328,6 +361,7 @@ class NewRaceComponent extends PageComponent {
           })
         });
 
+        this.loading = false;
         this.requestUpdate();
       });
   

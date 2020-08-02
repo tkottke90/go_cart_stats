@@ -128,3 +128,19 @@
 
   padding: 0.5rem;
 }
+
+.scanningHeader {
+  color: var(--theme-primary);
+}
+
+.scanningBody {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.scanningBody :global {
+  animation-name: pulse;
+  animation-duration: 2s;
+  animation-timing-function: var(--default-bezier);
+  animation-iteration-count: infinite;
+}
