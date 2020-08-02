@@ -61,7 +61,6 @@ class NewRaceComponent extends PageComponent {
 
         const message = statusMessage[m.status] || 'Loading';
         const percentage = Math.floor(m.progress * 100);
-        console.dir({ string: m.progress, percentage })
         const progress = message === 'Scanning' ? html` <span>${percentage}%</span>` : '';
 
         this.dialogContent = html`
