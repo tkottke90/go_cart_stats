@@ -80,7 +80,7 @@ class HomeElement extends PageComponent {
   generateRaceTable() {
     let raceArr = [];
     if (this.races.length >= 3) {
-      raceArr = this.races.slice(0, 2);
+      raceArr = this.races.slice(0, 3);
     } else {
       raceArr = this.races;
       const placeholderCount = 3 - raceArr.length;
@@ -119,7 +119,7 @@ class HomeElement extends PageComponent {
   generateVotesTable() {
     let voteArr = [];
     if (this.votes.length >= 3) {
-      voteArr = this.votes.slice(0, 2);
+      voteArr = this.votes.slice(0, 3);
     } else {
       voteArr = this.votes;
       const placeholderCount = 3 - voteArr.length;
