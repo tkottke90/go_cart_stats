@@ -20,7 +20,7 @@ export default class VoteService {
   }
 
   public static createVote(data: any) {
-    return HTTPService.post(`${this.baseUrl}`, data).toPromise();
+    return HTTPService.post(`${this.baseUrl}/create`, data).toPromise();
   }
 
   public static findVotes(query: any) {
