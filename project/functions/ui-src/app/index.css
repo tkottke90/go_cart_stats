@@ -22,6 +22,7 @@ body[theme='light'] {
   --foreground: #222;
   --background: #ececec;
 
+  --overlay: #222222CC;
   --svg-foreground: #000;
 }
 
@@ -72,4 +73,18 @@ a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
