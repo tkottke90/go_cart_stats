@@ -117,6 +117,11 @@ class NewRaceComponent extends PageComponent {
     });
   }
 
+  onActivated() {
+    this.reset();
+    return;
+  }
+
   generateLapRow(time: string = '', bestLap: boolean = false, position: string = '', index: number = -1) {
     return html`
       <div class="${styles.lapRow}"  @input=${this.updateLap}>
@@ -403,6 +408,7 @@ class NewRaceComponent extends PageComponent {
       }
 
       this.loading = false;
+      this.reset();
       this.requestUpdate();
       // TODO - Add Snackbar Notification of Success
 
@@ -426,6 +432,15 @@ class NewRaceComponent extends PageComponent {
 
   private navgiateToHome() {
     Router.navigate('/');
+  }
+
+  private reset() {
+    const form = this.querySelector('form') as HTMLFormElement;
+    form.reset();
+
+    this.totalTime = '';
+    this.laps = [ { time: '', position: '', bestLap: false } ]
+    this.dialogContent = html``;
   }
 }
 
