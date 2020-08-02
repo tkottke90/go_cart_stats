@@ -65,7 +65,7 @@ class NewRaceComponent extends PageComponent {
 
         this.dialogContent = html`
           <h3 slot="header" class="${styles.scanningHeader}">Scanning Image</h3>
-          <div class="${styles.scanningBody}">
+          <div class="${styles.scanningBody} ${styles.pulse}">
             <h4>${message}${progress}</h4>
           </div>
         `
@@ -119,6 +119,7 @@ class NewRaceComponent extends PageComponent {
 
   onActivated() {
     this.reset();
+    this.requestUpdate()
     return;
   }
 
@@ -192,6 +193,7 @@ class NewRaceComponent extends PageComponent {
           autocomplete="now"
           type="datetime-local"
           value="${time}"
+          class="${styles.dateInput}"
         />
 
         <div class="${styles.overall}">
@@ -217,7 +219,7 @@ class NewRaceComponent extends PageComponent {
         <div class="${styles.trackList}">
           ${this.tracks.map( track => {
             return html`
-              <button class="trackButton" data-name="${track.name}">
+              <button class="${styles.trackButton}" data-name="${track.name}">
                 ${ unsafeSVG(track.thumbnail) }
               </button>
             `
@@ -395,6 +397,12 @@ class NewRaceComponent extends PageComponent {
 
     if (valid) {
       this.loading = true;
+      this.dialogContent = html`
+        <h3 slot="header" class="${styles.scanningHeader}">Saving Race</h3>
+        <div class="${styles.scanningBody} ${styles.pulse}">
+          <h4>Submitting Race Details</h4>
+        </div>
+      `;
       this.requestUpdate();
 
       try {
@@ -407,13 +415,47 @@ class NewRaceComponent extends PageComponent {
         // TODO - Add Snackbar Notification Of Failure
       }
 
-      this.loading = false;
-      this.reset();
+      this.dialogContent = html`
+        <h3 slot="header" class="${styles.scanningHeader}">Saving Race</h3>
+        <div class="${styles.scanningBody}">
+          <h4>Success!</h4>
+        </div>
+      `;
       this.requestUpdate();
+
+      setTimeout(() => {
+        this.loading = false;
+        this.reset();
+        this.requestUpdate();
+      }, 2000);
       // TODO - Add Snackbar Notification of Success
 
       // Router.navigate('/');
     } else {
+      const invalidFields = elements.map((e: HTMLElement) => {
+        const valid = formHelper.getValidity(e);
+        if (valid) {
+          return false;
+        }
+        const elem = e as HTMLInputElement;
+
+        return { name: elem.name, validity: elem.validationMessage }
+      }).filter( response => response );
+
+      this.dialogContent = html`
+        <h3 slot="header" class="${styles.scanningHeader}">Saving Race</h3>
+        <div class="${styles.scanningBodyErrors} ">
+          <h4>Issues Found (${invalidFields.length}):</h4>
+          <ul>
+            ${invalidFields.map((item: any) => html`<li>${item.name}: ${item.validity}</li>`)}
+          </ul>
+        </div>
+        <div slot="actions">
+          <custom-button padding="0.5rem" label="close" color="primary" type="raised" @click=${this.closeLoading}></custom-button>
+        </div>
+      `;
+      this.requestUpdate();
+
       console.error('Invalid Form Submittion');
     }
   }
@@ -432,6 +474,11 @@ class NewRaceComponent extends PageComponent {
 
   private navgiateToHome() {
     Router.navigate('/');
+  }
+
+  private closeLoading() {
+    this.loading = false;
+    this.requestUpdate();
   }
 
   private reset() {

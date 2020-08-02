@@ -18,6 +18,9 @@
 .inputs {
   display: flex;
   flex-direction: column;
+
+  width: 100%;
+  padding: 0.1rem;
 }
 
 .inputs input, .inputs > select {
@@ -33,6 +36,27 @@
 .inputs input:invalid {
   border: 1px solid var(--theme-warn, red);
   color: var(--theme-warn, red);
+}
+
+.inputs > .dateInput {
+  width: 95%;
+  margin: 0.75rem auto;
+}
+
+.trackList {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  margin: 1rem 0;
+}
+
+.trackButton > svg {
+  width: 32px;
+  height: 46px; 
+  transform: rotate(-90deg);
+
+  pointer-events: none;
 }
 
 .overall {
@@ -138,7 +162,11 @@
   text-align: center;
 }
 
-.scanningBody :global {
+.scanningBody {
+  margin: 1rem 0;
+}
+
+.scanningBody .pulse:global {
   animation-name: pulse;
   animation-duration: 2s;
   animation-timing-function: var(--default-bezier);
