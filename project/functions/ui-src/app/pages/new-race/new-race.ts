@@ -49,8 +49,6 @@ class NewRaceComponent extends PageComponent {
       langPath: 'https://tessdata.projectnaptha.com/4.0.0',
       corePath: 'https://unpkg.com/tesseract.js-core@v2.0.0/tesseract-core.wasm.js',
       logger: (m: any) => {
-        console.log(m)
-      
         const statusMessage: { [key: string]: string } = {
           "loading tesseract core": "Loading Module",
           "initializing tesseract": "Initializing",
