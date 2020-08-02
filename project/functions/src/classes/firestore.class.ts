@@ -192,10 +192,12 @@ export default class FirestoreClass extends BaseRoute {
   public patch = (context: IContext) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data = JSON.parse(context.data);
-        const dataLength = Object.keys(data).length;
+        
 
-        const modelValidation = this.Model.validate(data, { presence: 'optional', abortEarly: false, convert: true });
+        // const data = JSON.parse(context.data);
+        const dataLength = Object.keys(context.data).length;
+
+        const modelValidation = this.Model.validate(context.data, { presence: 'optional', abortEarly: false, convert: true });
         if (modelValidation.error) {
           reject({
             message: modelValidation.error.details.map( item => item.message ),
@@ -207,13 +209,13 @@ export default class FirestoreClass extends BaseRoute {
         if (dataLength === 0) {
           reject({
             message: 'No data provided',
-            data: data
+            data: context.data
           });
           return;
         }
 
         const ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${context.params.id}`)
-        await ref.update(data);
+        await ref.update(context.data);
 
         const result = await ref.get();
 
@@ -228,6 +230,8 @@ export default class FirestoreClass extends BaseRoute {
   public put = (context: IContext) => {
     return new Promise(async (resolve, reject) => {
       try {
+        
+
         const modelValidation = this.Model.validate(context.data, { presence: 'required', convert: true });
         if (modelValidation. error) {
           reject({
@@ -244,7 +248,7 @@ export default class FirestoreClass extends BaseRoute {
 
         resolve({ _code: 202, updateResult, result });
       } catch (error) {
-        logger.error(error);
+        logger.error(error.message);
         reject(error);
       }
     })
