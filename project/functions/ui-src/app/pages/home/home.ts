@@ -170,7 +170,7 @@ class HomeElement extends PageComponent {
       </section>
       <section class="${styles.actions}">
         <custom-button padding="0.25rem" type="raised" label="Add Race" @click=${this.navigateToNewRace}></custom-button>
-        <custom-button padding="0.25rem" type="raised" label="Voting"></custom-button>
+        <custom-button padding="0.25rem" type="raised" label="Voting" @click=${this.navigateToNewVote}></custom-button>
       </section>
       <section class="${styles.races} ${styles.table}">
         <h4 class="${styles.tableTitle}">Recent Races</h4>
@@ -191,6 +191,10 @@ class HomeElement extends PageComponent {
 
   private navigateToNewRace() {
     Router.navigate('/new-race');
+  }
+
+  private navigateToNewVote() {
+    Router.navigate('/new-vote');
   }
 }
 
