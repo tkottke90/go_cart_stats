@@ -59,7 +59,7 @@ const queryDocument = (collection: admin.firestore.CollectionReference, query: a
 export default class FirestoreClass extends BaseRoute {
   public Model: ObjectSchema<any> = object(); // Data Validation
   public ModelName: string = '';              // DB Lookup
-  private db: admin.firestore.Firestore;
+  public db: admin.firestore.Firestore;
 
   constructor(app: Application, routeName: string, options?: any) {
     super(app, `/${routeName}`);
