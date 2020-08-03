@@ -11,15 +11,12 @@ import { IContext, IModelHooks } from '../interfaces/routing.interfaces';
 const queryDocument = (collection: admin.firestore.CollectionReference, query: any) => {
   const keys = Object.keys(query);
 
-  if (keys.length > 1) {
-    return collection;
-  }
-
   let docAndQuery: admin.firestore.Query | false = false;;
   const equivilanceQueries = keys.filter( item => typeof query[item] !== 'object' );
   const comparisonQueries = keys.filter( item => typeof query[item] === 'object' );
 
   equivilanceQueries.forEach( item => {
+    console.log(item, query[item]);
     const queryAble = docAndQuery ? docAndQuery : collection;
     docAndQuery = queryAble.where( item, '==' , query[item] )
   });
@@ -95,6 +92,8 @@ export default class FirestoreClass extends BaseRoute {
         if (!ref) {
           reject('Missing Model');
         }
+
+        logger.debug(context.data);
 
         const query = queryDocument(ref, context.data);
 
