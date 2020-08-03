@@ -53,23 +53,33 @@ export default function (adminSDK: admin.app.App) {
           // Collect votes
           const ballotBox: { [key: string]: number } = {};
           reportData.votes.forEach( (vote: any) => ballotBox[vote.ballot] = ballotBox[vote.ballot] ? ballotBox[vote.ballot] + 1 : 1 );
-  
-          console.dir({ballotBox});
 
-          const winner: any = { winner: '', votes: 0 };
+          let winner: any = [{ name: '', votes: 0 }];
           Object.keys(ballotBox).forEach( (racer: any) => {
-            if (ballotBox[racer] > winner.votes) {
-              winner.winner = racer;
-              winner.votes = ballotBox[racer];
+            // Skip racers with no votes
+            if (ballotBox[racer] === 0) {
+              return;
             }
+            
+            // If racer has the same number of votes, then add to list
+            if (winner[0].votes === ballotBox[racer]) {
+              winner.push({ name: racer, votes: ballotBox[racer] })
+            }
+
+            // If racer has more votes, reset list and most vote count
+            if (ballotBox[racer] > winner[0].votes) {
+              winner = [{ name: racer, votes: ballotBox[racer] }];
+            }
+
+            // Skip racer if they do not meet the above criteria
+            return;
           })
 
-          if (winner.winner) {
-            updateData.winner = winner.winner;
+          if (winner.length > 0 && winner[0].name) {
+            updateData.winner = winner.map( (racer: any) => racer.name ).join(',') ;
           }
 
           dailyReport.ref.update(updateData);
-
         } catch (err) {
           functions.logger.error(err);
         }
