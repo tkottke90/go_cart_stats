@@ -65,8 +65,8 @@ class HomeElement extends PageComponent {
         Router.navigate('/new-user');
       }
 
-      VoteService.findVotes({ userId: user.id });
-      RaceService.findRaces({ userId: this.user.id });
+      VoteService.findVotes({ voter: user.id, active: true });
+      RaceService.findRaces({ userId: this.user.id, valid: true });
 
       this.loading = false;
       this.requestUpdate();
