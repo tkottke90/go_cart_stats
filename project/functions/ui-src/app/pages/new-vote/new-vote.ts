@@ -18,9 +18,9 @@ const tag = 'new-vote-component'
 
 class NewVoteComponent extends PageComponent {
 
-  private isAdmin: boolean = false;
+  private isAdmin: boolean = true;
   private user: any = false;
-  private dailyRecord: firebase.firestore.DocumentData = VotesService.DailyPlaceholder;
+  private dailyRecord: any = VotesService.DailyPlaceholder;
   private userList: User.Details[] = [];
 
   private daily: any;
@@ -31,20 +31,30 @@ class NewVoteComponent extends PageComponent {
     this.daily = FirebaseService.$currentVotes()
     this.daily.onSnapshot({
       next: async (snapshot: firebase.firestore.DocumentSnapshot) => {
-        console.dir(snapshot);
-        this.dailyRecord = snapshot.data() || {};
-        console.dir(this.dailyRecord)
+        this.dailyRecord = snapshot.data() || false;
         this.requestUpdate()
       }
     })
 
-    this.user = UserService.$user.value;
+    UserService
+      .$user
+      .subscribe( user => {
+        if (!user) {
+          Router.navigate('/login');
+          UserService.logout();
+          return;
+        }
+
+        this.user = user;
+      });
     
+    UserService.getUserDetails();
     const _user = UserService.getUser() as firebase.User;
     _user
       .getIdTokenResult()
       .then( token => {
-        this.isAdmin === !!token.claims.admin;
+        console.log(token);
+        // this.isAdmin = !!token.claims.admin;
       })
 
     UserService
@@ -59,6 +69,13 @@ class NewVoteComponent extends PageComponent {
   }
 
   render() {
+    if (this.dailyRecord && this.user) {
+      const vote = this.dailyRecord.votes.findIndex( (item: any) => item.voter == this.user.id );
+      if (vote !== -1) {
+        this.selected = this.userList.findIndex( (item: any) => item.displayName === this.dailyRecord[vote].ballot )
+      }
+    }
+
     return html`
       <header-component>
         <custom-button slot="menu" color="on-primary" padding="0" @click=${this.navgiateToHome}>
@@ -74,12 +91,13 @@ class NewVoteComponent extends PageComponent {
           <h3>Status: ${this.renderStatus()}</h3>
         </section>
         <section class="${styles.admin}">
-          <custom-button
-            label="Toggle Status"
-          ></custom-button> 
+          ${this.renderAdmin()}
         </section>
         <section class="${styles.myVotes}">
-          <div class="${styles.overlay}"></div>
+          <div class="${styles.overlay}" ?open=${!this.dailyRecord.open}>
+            <h2>Voting Closed</h2>
+            ${ this.dailyRecord.winner ? html`<h3>Winner: ${this.dailyRecord.winner}</h3>` : ''}
+          </div>
           <div class="${styles.buttonList}">
             ${this.userList.map( (user: User.Details, index: number) => {
               if (user.displayName === this.user.displayName) {
@@ -118,6 +136,8 @@ class NewVoteComponent extends PageComponent {
       return;
     }
 
+    console.dir(this.user);
+
     const vote: Votes.Vote = {
       voter: this.user.id,
       ballot,
@@ -133,6 +153,60 @@ class NewVoteComponent extends PageComponent {
     }
 
     return html`<span class="${styles.status} ${styles['status--closed']}">Closed</span>`;
+  }
+
+  private renderAdmin() {
+    if (!this.isAdmin) {
+      return html`<div>Not for Users</div>`;
+    }
+
+    if (!this.dailyRecord) {
+      return html`<custom-button
+        label="Start Voting"
+        type="raised"
+        color="primary"
+        padding="0.5rem"
+        @click=${VotesService.createDaily}
+      ></custom-button>`
+    }
+
+    if (this.dailyRecord.open) {
+      return html`
+        <div class="${styles.adminOpen}">
+          <section class="${styles.actions}">
+            <custom-button
+              label="Close Voting"
+              type="raised"
+              color="accent"
+              padding="0.25rem"
+              @click=${VotesService.toggleDaily}
+            ></custom-button>
+          </section>
+          <section class="${styles.data}">
+            <p><strong>Current Winner:</strong></p>
+            <p>${this.dailyRecord.winner}</p>
+          </section>
+        </div>
+      `;
+    }
+
+    return html`
+      <div class="${styles.adminOpen}">
+        <section class="${styles.actions}">
+          <custom-button
+            label="Open Voting"
+            type="raised"
+            color="accent"
+            padding="0.25rem"
+            @click=${VotesService.toggleDaily}
+          ></custom-button>
+        </section>
+        <section class="${styles.data}">
+          <p><strong>Current Winner:</strong></p>
+          <p>${this.dailyRecord.winner}</p>
+        </section>
+      </div>
+    `;
   }
 
   private navgiateToHome() {
