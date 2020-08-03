@@ -46,4 +46,12 @@ export default class VoteService {
   public static getDaily() {
     return HTTPService.get(`/daily/votes`).toPromise();
   }
+
+  public static createDaily() {
+    return HTTPService.post(`/daily/votes`, {}).toPromise();
+  }
+
+  public static toggleDaily() {
+    return HTTPService.post(`/daily/toggle-votes`, {}).toPromise();
+  }
 }
