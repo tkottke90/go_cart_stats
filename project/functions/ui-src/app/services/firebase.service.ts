@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore'
 
 export default class FirebaseService {
 
@@ -48,5 +49,13 @@ export default class FirebaseService {
 
   public static signOut(): Promise<void> {
     return firebase.auth().signOut();
+  }
+
+  public static $currentVotes() {
+    const now = new Date();
+    now.getUTCFullYear
+    const docName = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+    console.dir(docName);
+    return firebase.firestore().collection('dailyVotes').doc(docName);
   }
 }
