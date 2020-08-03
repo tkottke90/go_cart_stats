@@ -384,7 +384,7 @@ class NewRaceComponent extends PageComponent {
     const bestTime = this.laps.find( item => item.bestLap );
     const data: Races.Entry = {
       userId: this.user.id,
-      date: new Date(formData.date),
+      date: new Date(formData.date).valueOf(),
       cartNumber: formData.cartNumber,
       totalTime: formData.totalTime,
       bestTime: bestTime ? bestTime.time : 'N/A',

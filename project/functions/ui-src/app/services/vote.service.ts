@@ -8,9 +8,16 @@ export default class VoteService {
   private static baseUrl = '/votes';
 
   public static VotesPlaceholder: Votes.Vote = {
-    userId: '',
+    voter: '',
     ballot: '',
-    date: '',
+    date: 0,
+  }
+
+  public static DailyPlaceholder: Votes.DailyRecord = {
+    lastUpdated: 0,
+    count: 0,
+    votes: [],
+    open: true
   }
 
   public static votes: BehaviorSubject<Votes.Vote[]> = new BehaviorSubject<Votes.Vote[]>([]);
@@ -34,5 +41,9 @@ export default class VoteService {
       this.votes.next(await result.json());
       resolve();
     });
+  }
+
+  public static getDaily() {
+    return HTTPService.get(`/daily/votes`).toPromise();
   }
 }

@@ -9,7 +9,7 @@ export namespace Races {
 
   export interface Entry {
     userId: string;
-    date: string | Date;
+    date: number;
     cartNumber: string;
     totalTime: string;
     bestTime: string;

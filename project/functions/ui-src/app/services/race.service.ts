@@ -11,7 +11,7 @@ export default class RaceService {
     userId: '',
     cartNumber: '',
     totalTime: '',
-    date: '',
+    date: 0,
     bestTime: '',
     laps: []
   }

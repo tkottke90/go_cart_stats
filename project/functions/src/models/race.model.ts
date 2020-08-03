@@ -2,7 +2,7 @@ import * as Joi from '@hapi/joi';
 
 export default Joi.object({
     userId: Joi.string(),
-    date: Joi.date(),
+    date: Joi.number(),
     cartNumber: Joi.number().positive(),
     trackId: Joi.string().optional(),
     totalTime: Joi.string().allow(''),

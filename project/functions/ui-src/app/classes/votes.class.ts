@@ -1,9 +1,16 @@
 export namespace Votes {
 
   export interface Vote {
-    userId: string;
+    voter: string;
     ballot: string;
-    date: string;
+    date: number;
     invalid?: boolean;
+  }
+
+  export interface DailyRecord {
+    lastUpdated: number;
+    count: number;
+    open: boolean;
+    votes: Vote[];
   }
 }
