@@ -64,7 +64,7 @@ abstract class BaseRoute {
     return _context;
   };
 
-  private generateRoute(route: IRoute) {
+  public generateRoute(route: IRoute) {
     logger.debug(`Configuring: ${route.method.toUpperCase()} ${this.routeName}${route.path}`);
     this.router[route.method](route.path, async (request: express.Request, response: express.Response) => {
       let context: IContext = {
