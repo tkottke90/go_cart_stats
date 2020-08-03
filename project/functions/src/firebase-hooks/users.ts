@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as _ from 'lodash';
 
 /**
  * Hook triggers when a new user is created.  The application should create a new
@@ -42,9 +43,10 @@ export default function(adminSDK: admin.app.App) {
             const document = db.doc('users/${docID}');
     
             const data = {
-                experience: 0,
-                number: -2,
-                rival: '',
+                email: user.email || '',
+                new: true,
+                id: user.uid,
+                displayName: user.displayName
             }
     
             document.set(data);
@@ -55,7 +57,6 @@ export default function(adminSDK: admin.app.App) {
         }
         return;
     });
-    
     
     return {
       createUserDocument,
