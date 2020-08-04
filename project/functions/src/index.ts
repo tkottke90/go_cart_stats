@@ -4,6 +4,7 @@ import * as admin from 'firebase-admin';
 // Firebase Webhooks
 import votes from './firebase-hooks/votes';
 import users from './firebase-hooks/users';
+import races from './firebase-hooks/races';
 
 // Application
 import Application from './classes/application.class';
@@ -19,3 +20,4 @@ routes(app);
 exports.api = functions.https.onRequest(app.express);
 exports.userWebhooks = users(app.admin);
 exports.voteWebhooks = votes(app.admin);
+exports.raceWebhooks = races(app.admin);
