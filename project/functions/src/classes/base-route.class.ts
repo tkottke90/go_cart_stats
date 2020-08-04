@@ -1,6 +1,5 @@
 import * as express from 'express';
 import { logger } from 'firebase-functions';
-import { Router } from 'express';
 import Application from './application.class';
 import * as _ from 'lodash'
 
@@ -17,7 +16,7 @@ const unusedRoute = (context: IContext) => {
 };
 
 abstract class BaseRoute {
-  public router: Router;
+  public router: express.Router;
   public routeName: string;
   public paginate: boolean = false;
   protected app: Application;
@@ -32,7 +31,7 @@ abstract class BaseRoute {
   ];
 
   constructor(app: Application, route: string) {
-    this.router = Router();
+    this.router = express.Router();
     this.app = app;
     this.routeName = route;
   }
@@ -137,14 +136,15 @@ abstract class BaseRoute {
   private handleError = (errorHooks: IHook[]) => async (location: 'before' | 'action' | 'after', context: IContext, response: express.Response): Promise<void> => {
     logger.debug('Error handler called ', { error: context.error, method: context.method, step: location });
 
+    let finalContext = context;
     for await (const hook of this.processHooks(context, errorHooks)) {
       const { _context, } = hook;
-      context = _context;
+      finalContext = _context;
     }
 
-    const code = context.error?._code || 500;
+    const code = finalContext.error?._code || 500;
 
-    response.status(code).json({ error: context.error });
+    response.status(code).json({ error: finalContext.error });
   }
 }
 

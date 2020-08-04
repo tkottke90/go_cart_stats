@@ -1,12 +1,12 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { app, firestore } from 'firebase-admin';
 import * as _ from 'lodash';
 
 /**
  * Hook triggers when a new user is created.  The application should create a new
  *   document in the 'users' collection in Google Firestore
  */
- exports.createUserDocument = (admin: admin.app.App) => functions.auth.user().onCreate( user => {
+ exports.createUserDocument = (admin: app.App) => functions.auth.user().onCreate( user => {
     const userID = user.uid;
 
     try {
@@ -28,7 +28,7 @@ import * as _ from 'lodash';
     return;
 });
 
-export default function(adminSDK: admin.app.App) {
+export default function(adminSDK: app.App) {
     const documentCreated = functions.firestore.document('/test/user').onCreate(async ( change, context ) => {
         console.dir('User file updated');
 
@@ -39,7 +39,7 @@ export default function(adminSDK: admin.app.App) {
         // const userID = user.uid;
     
         try {
-            const db = admin.firestore();
+            const db = firestore();
             const document = db.doc('users/${docID}');
     
             const data = {

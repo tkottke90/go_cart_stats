@@ -32,11 +32,11 @@ const iterateOverObject = (key: string, param: any) => {
     const keys = Object.keys(param);
 
     let output = { ...param };
-    keys.forEach( key => {
-      const { value, retainStructure } = iterateOverObject(key, param[key]);
+    keys.forEach( k => {
+      const { value, retainStructure } = iterateOverObject(k, param[key]);
 
       if (retainStructure) {
-        output[key] = value;
+        output[k] = value;
       } else {
         output = value;
       }

@@ -41,7 +41,7 @@ export default function (adminSDK: admin.app.App) {
       const trackConfig: any = await rtdb.ref('trackConfig').once('value') || 'OG';
   
       // Get track document
-      let doc = await db.collection('tracks').doc(trackConfig.track).get()
+      const doc = await db.collection('tracks').doc(trackConfig.track).get()
       let trackDoc: any = doc.data();      
 
       // If track is false, create record

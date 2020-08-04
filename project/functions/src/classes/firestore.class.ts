@@ -79,7 +79,7 @@ export default class FirestoreClass extends BaseRoute {
         { method: 'post', path: '/create', action: this.post, beforeHooks: [...beforeHooks.all, ...beforeHooks.create ], afterHooks: [...afterHooks.all, ...afterHooks.create ], errorHooks: [...errorHooks.all, ...errorHooks.create ]},
         { method: 'patch', path: '/:id', action: this.patch, beforeHooks: [...beforeHooks.all, ...beforeHooks.update ], afterHooks: [...afterHooks.all, ...afterHooks.update ], errorHooks: [...errorHooks.all, ...errorHooks.update ]},
         { method: 'put', path: '/:id', action: this.put, beforeHooks: [...beforeHooks.all, ...beforeHooks.updateOrCreate ], afterHooks: [...afterHooks.all, ...afterHooks.updateOrCreate ], errorHooks: [...errorHooks.all, ...errorHooks.updateOrCreate ]},
-        { method: 'delete', path: '/:id', action: this.delete, beforeHooks: [...beforeHooks.all, ...beforeHooks.delete ], afterHooks: [...afterHooks.all, ...afterHooks.delete ], errorHooks: [...errorHooks.all, ...errorHooks.delete ]},
+        // { method: 'delete', path: '/:id', action: this.delete, beforeHooks: [...beforeHooks.all, ...beforeHooks.delete ], afterHooks: [...afterHooks.all, ...afterHooks.delete ], errorHooks: [...errorHooks.all, ...errorHooks.delete ]},
       ]
     });
   }
@@ -157,7 +157,7 @@ export default class FirestoreClass extends BaseRoute {
         let ref: admin.firestore.DocumentReference = await this.db.doc(`${this.ModelName}/${id}`)
         let docExist = true;
         let tries = 0;
-        let MAX_RETRIES = 5;
+        const MAX_RETRIES = 5;
 
         while (docExist || tries < MAX_RETRIES) {
           const doc = await ref.get();
@@ -253,11 +253,11 @@ export default class FirestoreClass extends BaseRoute {
     })
   }
 
-  public delete = (context: IContext) => {
-    return new Promise(async (resolve, reject) => { })
-  }
+  // public delete = (context: IContext) => {
+  //   return new Promise(async (resolve, reject) => { })
+  // }
 
-  public options = (context: IContext) => {
-    return new Promise(async (resolve, reject) => { })
-  }
+  // public options = (context: IContext) => {
+  //   return new Promise(async (resolve, reject) => { })
+  // }
 }

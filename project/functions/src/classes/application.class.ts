@@ -16,17 +16,17 @@ export default class Application {
   public rdb: admin.database.Database;
   public storage: admin.storage.Storage;
 
-  constructor(admin: admin.app.App) {
+  constructor(adminApp: admin.app.App) {
     this.express = express();
     this.express.use(cookieParser());
     this.express.use(express.json());
     this.express.use(helmet());
 
-    this.admin = admin;
-    this.firestore = admin.firestore();
-    this.rdb = admin.database();
-    this.authentication = admin.auth();
-    this.storage = admin.storage();
+    this.admin = adminApp;
+    this.firestore = adminApp.firestore();
+    this.rdb = adminApp.database();
+    this.authentication = adminApp.auth();
+    this.storage = adminApp.storage();
 
     functions.logger.info('Express App Configured');
   }
