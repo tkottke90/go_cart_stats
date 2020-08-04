@@ -166,7 +166,7 @@
   margin: 1rem 0;
 }
 
-.scanningBody .pulse:global {
+.scanningBody > h4:global {
   animation-name: pulse;
   animation-duration: 2s;
   animation-timing-function: var(--default-bezier);

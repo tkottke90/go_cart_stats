@@ -328,17 +328,29 @@ class NewRaceComponent extends PageComponent {
         
         const file = files[0] as File;
 
-        const fileUri = await new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        canvas.height = 480;
+        canvas.width = 640;
+
+        const fileUri: any = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => resolve(reader.result);
           reader.readAsDataURL(file);
         });
 
+        const image = new Image();
+        image.src = fileUri;
+        
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        const dataURI = canvas.toDataURL();
+
         // Create Worker
         await this.worker.load();
         await this.worker.loadLanguage('eng');
         await this.worker.initialize('eng');
-        const result = await this.worker.recognize(fileUri);
+        const result = await this.worker.recognize(dataURI);
 
         // Review results
         const { data: { lines } } = result;
