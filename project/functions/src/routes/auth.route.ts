@@ -53,7 +53,7 @@ class AuthRoute extends BaseClass {
         secure: process.env.NODE_ENV === 'production'
       };
 
-      context.response.cookie('session', sessionCookie, cookieOptions);
+      context.response.cookie('__session', sessionCookie, cookieOptions);
       return { status: 'success' };
     } catch (err) {
       console.error(err);

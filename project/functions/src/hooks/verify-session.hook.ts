@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 export default function() {
   return async (context: IContext) => {
     const auth = context.app.admin.auth();
-    const cookie = _.get(context, 'request.cookies.session', '');
+    const cookie = _.get(context, 'request.cookies.__session', '');
 
     logger.debug('Cookies', { cookie, jar: context.request.cookies, path: context.request.path, method: context.request.method });
 
@@ -20,7 +20,7 @@ export default function() {
     } catch (err) {
       context.error = err;
       context.error._code = 401;
-      context.response.clearCookie('session');
+      context.response.clearCookie('__session');
       return context;
     }    
   }
