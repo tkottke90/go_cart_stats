@@ -117,6 +117,9 @@
 
 .loadingContainer {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   top: 0;
   left: 0;
@@ -126,9 +129,17 @@
   z-index: 1000;
 
   background-color: aliceblue;
+  color: var(--theme-primary);
 }
 
 .loadingContainer[hidden] {
   transform: scale(0);
   opacity: 0;
+}
+
+.loadingContainer > h2:global {
+  animation-name: pulse;
+  animation-duration: 2s;
+  animation-timing-function: var(--default-bezier);
+  animation-iteration-count: infinite;
 }

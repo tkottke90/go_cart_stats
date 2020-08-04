@@ -184,7 +184,7 @@ class HomeElement extends PageComponent {
       </section>
      </main>
      <section class="${styles.loadingContainer}" ?hidden=${!this.loading} >
-      <h3>Loading</h3>
+      <h2>Loading...</h2>
      </section>
     `
   }
