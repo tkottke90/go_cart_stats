@@ -96,7 +96,7 @@ class HomeElement extends PageComponent {
         <h4 class="${styles.timeCol}">Time</h4>
         <h4 class="${styles.bestCol}">Fast Lap</h4>
       </header>
-      <section>
+      <section class="${styles.tableBody}">
         ${ raceArr.map( (race: Races.Entry) => {
           const date = new Date(race.date);
           let dateString = '00';
@@ -134,7 +134,7 @@ class HomeElement extends PageComponent {
         <h4 class="${styles.dateCol}">Date</h4>
         <h4 class="${styles.voteCol}">Vote</h4>
       </header>
-      <section>
+      <section class="${styles.tableBody}">
         ${ voteArr.map( (vote: Votes.Vote) => {
           const date = new Date(vote.date);
           let dateString = '00';

@@ -43,7 +43,7 @@ class DialogComponent extends LitElement {
           margin: 1rem;
           padding: 1rem;
 
-          background-color: var(--background);
+          background-color: #fff;
           box-shadow: var(--elevation-2); 
 
           z-index: 1010;

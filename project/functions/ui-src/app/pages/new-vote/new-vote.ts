@@ -194,6 +194,7 @@ class NewVoteComponent extends PageComponent {
       <div class="${styles.adminOpen}">
         <section class="${styles.actions}">
           <custom-button
+            styles="font-weight: 600"
             label="Open Voting"
             type="raised"
             color="accent"

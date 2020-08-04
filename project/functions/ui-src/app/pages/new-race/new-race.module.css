@@ -30,7 +30,7 @@
   box-shadow: none;
 
   border: 1.5px solid var(--theme-primary);
-  color: var(--foreground);
+  color: #222;
 }
 
 .inputs input:invalid {

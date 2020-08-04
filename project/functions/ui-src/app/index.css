@@ -16,10 +16,10 @@ body[theme='light'] {
   --theme-primary: #12823F;
   --theme-accent: #fff;
   --theme-warn: #fe7a00;
-  --theme-on-primary: #000;
+  --theme-on-primary: #FFF;
   --theme-on-accent: #000;
   --theme-on-warn: #222;
-  --foreground: #222;
+  --foreground: #FFF;
   --background: #AAA;
 
   --overlay: #222222ED;
@@ -34,7 +34,7 @@ body[theme='dark'] {
   --theme-on-primary: #fff;
   --theme-on-accent: #222;
   --theme-on-warn: #222;
-  --foreground: #222;
+  --foreground: #EEE;
   --background: #666;
 
   --overlay: #222222ED;
