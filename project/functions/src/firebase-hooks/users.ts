@@ -40,13 +40,13 @@ export default function(adminSDK: app.App) {
     
         try {
             const db = firestore();
-            const document = db.doc('users/${docID}');
+            const document = db.doc(`users/${user.uid}`);
     
             const data = {
                 email: user.email || '',
                 new: true,
                 id: user.uid,
-                displayName: user.displayName
+                displayName: user.displayName || ''
             }
     
             document.set(data);
