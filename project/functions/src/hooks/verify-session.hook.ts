@@ -9,8 +9,12 @@ export default function() {
 
     logger.debug('Cookies', { cookie, jar: context.request.cookies, path: context.request.path, method: context.request.method });
 
+    if (!cookie) {
+      logger.debug('Cookies - context.request', { request: context.request });
+    }
+
     try {
-      await auth.verifySessionCookie(cookie, true);
+      await auth.verifySessionCookie(cookie);
       
       return context;
     } catch (err) {
