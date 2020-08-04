@@ -338,12 +338,12 @@ class NewRaceComponent extends PageComponent {
           reader.readAsDataURL(file);
         });
 
-        const image = new Image();
+        const image = new Image() as HTMLImageElement;
         image.src = fileUri;
         
-        const context = canvas.getContext('2d');
+        const context: any = canvas.getContext('2d');
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
+        
         const dataURI = canvas.toDataURL();
 
         // Create Worker
