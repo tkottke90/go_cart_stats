@@ -96,7 +96,7 @@ class AppComponent extends BaseComponent {
         ${pages.map((route) => this.getTag(route))
           .map((route) => html`${route}`)}
 
-        <h3>Alpha</h3>
+        <h3 class="alpha">Alpha</h3>
     `;
   }
 }
