@@ -82,9 +82,21 @@ class AppComponent extends BaseComponent {
           width: 100%;
           transform: none;
         }
+
+        .alpha {
+          position: fixed;
+          height: 2rem;
+          color: var(--theme-warn);
+          bottom: 0;
+          left: 0;
+          right: 0;
+          top: calc(100vh - 2rem);
+        }
       </style>
         ${pages.map((route) => this.getTag(route))
           .map((route) => html`${route}`)}
+
+        <h3>Alpha</h3>
     `;
   }
 }
