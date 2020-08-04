@@ -65,7 +65,7 @@ class AppComponent extends BaseComponent {
           pointer-events: none;
           overflow: hidden;
           display: block;
-          max-height: 100%;
+          max-height: calc(100% - 2rem);
           transform: scale(.99,.99) translate(0, -.2rem);
           transition: 200ms var(--accelerate-bezier);
           transition-property: opacity, transform;
@@ -81,15 +81,15 @@ class AppComponent extends BaseComponent {
           height: 100%;
           width: 100%;
           transform: none;
+          margin-top: 2rem;
         }
 
         .alpha {
           position: fixed;
           height: 2rem;
-          bottom: 0;
           left: 0;
           right: 0;
-          top: calc(100vh - 2rem);
+          top: 0;
 
           z-index: 100;
           background: var(--theme-warn);
