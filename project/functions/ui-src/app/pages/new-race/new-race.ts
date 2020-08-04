@@ -270,7 +270,7 @@ class NewRaceComponent extends PageComponent {
             ></custom-button>
           </div>
         </form>
-        <dialog-component ?open=${this.loading}>
+        <dialog-component ?open=${this.loading} .clickClose=${false}>
           ${this.dialogContent}
         </dialog-component>
      </main>
