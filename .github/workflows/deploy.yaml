@@ -27,7 +27,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Get PWD
-        run: echo $PWD
+        run: |
+          echo $PWD
+          ls -halt
 
       - name: Install dependencies
         run: npm install
