@@ -325,14 +325,20 @@ class NewRaceComponent extends PageComponent {
         if (files.length === 0) {
           return;
         }
-
+        
         const file = files[0] as File;
+
+        const fileUri = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
 
         // Create Worker
         await this.worker.load();
         await this.worker.loadLanguage('eng');
         await this.worker.initialize('eng');
-        const result = await this.worker.recognize(file);
+        const result = await this.worker.recognize(fileUri);
 
         // Review results
         const { data: { lines } } = result;
