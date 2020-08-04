@@ -1,0 +1,25 @@
+name: Build and Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Build to firebase'
+        required: true
+        default: 'Mona the Octocat'
+      home:
+        description: 'location'
+        required: false
+
+jobs:
+  deploy: 
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install dependencies
+        uses: npm install
+        working-directory: ./projects/functions
+      - name: Deploy
+        uses: npx firebase deploy
+        working-directory: ./projects/functions
