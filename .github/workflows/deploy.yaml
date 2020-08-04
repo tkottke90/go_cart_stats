@@ -39,4 +39,4 @@ jobs:
       - name: Deploy
         run: |
           cd project/functions
-          npx firebase deploy
+          npx firebase deploy --non-interactive --token ${{ secrets.FIREBASE_CI_TOKEN }}
