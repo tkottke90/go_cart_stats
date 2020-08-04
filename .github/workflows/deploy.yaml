@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd projects/functions
+          cd project/functions
           npm install
       
       - name: Deploy
