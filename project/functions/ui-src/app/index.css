@@ -13,14 +13,14 @@
 
 body,
 body[theme='light'] {
-  --theme-primary: #758e9b;
-  --theme-accent: #558b2f;
-  --theme-warn: #fb8c00;
-  --theme-on-primary: #fff;
-  --theme-on-accent: #222;
+  --theme-primary: #12823F;
+  --theme-accent: #fff;
+  --theme-warn: #fe7a00;
+  --theme-on-primary: #000;
+  --theme-on-accent: #000;
   --theme-on-warn: #222;
   --foreground: #222;
-  --background: #ececec;
+  --background: #AAA;
 
   --overlay: #222222ED;
   --svg-foreground: #000;
@@ -28,16 +28,17 @@ body[theme='light'] {
 
 
 body[theme='dark'] {
-  --theme-primary: #617884;
-  --theme-accent: #447823;
-  --theme-warn: #f85c00;
-  --theme-on-primary: #FFF;
-  --theme-on-accent: #FFF;
-  --theme-on-warn: #fff;
-  --foreground: #E0E0E0;
-  --background: #263238;
+  --theme-primary: #222;
+  --theme-accent: #fef637;
+  --theme-warn: #fe7a00;
+  --theme-on-primary: #fff;
+  --theme-on-accent: #222;
+  --theme-on-warn: #222;
+  --foreground: #222;
+  --background: #666;
 
-  --svg-foreground: #E0E0E0;
+  --overlay: #222222ED;
+  --svg-foreground: #000;
 }
 
 body {
