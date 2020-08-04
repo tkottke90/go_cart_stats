@@ -2,7 +2,10 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 const sortRaces = (one: any, two: any) => {
-  if ()
+  // If either are missing the time property, return
+  if (!one.time || !two.time) {
+    return 0;
+  }
 
   if (one.time < two.time) {
   	return -1;
