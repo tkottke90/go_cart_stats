@@ -32,6 +32,10 @@
   box-shadow: var(--elevation-1);
 }
 
+.detail {
+  color: var(--foreground);
+}
+
 .exp, .rival {
   font-size: 0.85rem;
 }
@@ -81,6 +85,7 @@
   grid-row: 2;
 
   box-shadow: var(--elevation-1);
+  background-color: #fff;
 }
 
 .table > .tableBody {
