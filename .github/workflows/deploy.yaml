@@ -18,8 +18,8 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install dependencies
-        uses: npm install
+        run: npm install
         working-directory: ./projects/functions
       - name: Deploy
-        uses: npx firebase deploy
+        run: npx firebase deploy
         working-directory: ./projects/functions
