@@ -174,12 +174,12 @@ class HomeElement extends PageComponent {
       </section>
       <section class="${styles.races} ${styles.table}">
         <h4 class="${styles.tableTitle}">Recent Races</h4>
-        <custom-button class=${styles.tableBtn} padding="0.25rem" type="raised" label="My Races"></custom-button>
+        <custom-button class=${styles.tableBtn} padding="0.25rem" type="raised" label="My Races" disabled></custom-button>
         ${this.generateRaceTable()}
       </section>
       <section class="${styles.votes} ${styles.table}">
         <h4 class="${styles.tableTitle}">Recent Voting</h4>
-        <custom-button class=${styles.tableBtn} padding="0.25rem" type="raised" label="My Votes"></custom-button>
+        <custom-button class=${styles.tableBtn} padding="0.25rem" type="raised" label="My Votes" disabled></custom-button>
         ${this.generateVotesTable()}
       </section>
      </main>
