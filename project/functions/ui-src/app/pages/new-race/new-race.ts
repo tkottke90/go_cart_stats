@@ -28,6 +28,7 @@ const tag = 'new-race-component';
 
 class NewRaceComponent extends PageComponent {
 
+  private img: any;
   private loading = false;
   private dialogContent: TemplateResult = html``;
   private user: User.Details = UserService.UserPlaceholder;
@@ -65,6 +66,7 @@ class NewRaceComponent extends PageComponent {
           <h3 slot="header" class="${styles.scanningHeader}">Scanning Image</h3>
           <div class="${styles.scanningBody} ${styles.pulse}">
             <h4>${message}${progress}</h4>
+            <img src="${this.img}" />
           </div>
         `
 
@@ -333,6 +335,8 @@ class NewRaceComponent extends PageComponent {
           reader.onload = () => resolve(reader.result);
           reader.readAsDataURL(file);
         });
+
+        this.img = fileUri;
 
         // Create Worker
         await this.worker.load();
