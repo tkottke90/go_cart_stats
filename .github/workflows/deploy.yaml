@@ -19,15 +19,20 @@ jobs:
         node-version: [ 10.x ]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
+
       - name: Get Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: echo $PWD
+
+      - name: Get PWD
+        run: echo $PWD
+
       - name: Install dependencies
         run: npm install
         working-directory: ./projects/functions
+      
       - name: Deploy
         run: npx firebase deploy
         working-directory: ./projects/functions
