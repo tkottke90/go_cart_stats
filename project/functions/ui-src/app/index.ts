@@ -86,11 +86,16 @@ class AppComponent extends BaseComponent {
         .alpha {
           position: fixed;
           height: 2rem;
-          color: var(--theme-warn);
           bottom: 0;
           left: 0;
           right: 0;
           top: calc(100vh - 2rem);
+
+          z-index: 100;
+          background: var(--theme-warn);
+          color: var(--theme-on-warn);
+          padding: 0.5rem;
+          text-align: center;
         }
       </style>
         ${pages.map((route) => this.getTag(route))
