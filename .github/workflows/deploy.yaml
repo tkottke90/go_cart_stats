@@ -32,9 +32,11 @@ jobs:
           ls -halt
 
       - name: Install dependencies
-        run: npm install
-        working-directory: ./projects/functions
+        run: |
+          cd projects/functions
+          npm install
       
       - name: Deploy
-        run: npx firebase deploy
-        working-directory: ./projects/functions
+        run: |
+          cd project/functions
+          npx firebase deploy
