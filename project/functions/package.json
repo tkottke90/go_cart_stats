@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "npm run build:ui; npm run build:api",
+    "build": "npm run build:ui && npm run build:api",
     "build:api": "tsc",
     "build:ui": "rollup -c -m",
     "serve": "npm run build && firebase emulators:start --only functions",
