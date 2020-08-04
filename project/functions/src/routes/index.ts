@@ -27,7 +27,7 @@ export default async function routes(app: Application): Promise<void> {
   const directory = await readDir(path.resolve(__dirname));
   const routeFiles = directory.filter( (item) => /.*\.route\.(js|ts)$/.test(item));
   await Promise.all(routeFiles.map( async (file) => {
-    logger.info(`Importing Route: ${file}`);
+    logger.debug(`Importing Route: ${file}`);
     await import(path.resolve(__dirname, file)).then( (module) => module.initialize(app));
   }));
 

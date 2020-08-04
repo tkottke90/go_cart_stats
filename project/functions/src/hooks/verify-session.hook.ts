@@ -7,7 +7,7 @@ export default function() {
     const auth = context.app.admin.auth();
     const cookie = _.get(context, 'request.cookies.session', '');
 
-    logger.debug('Cookies', { cookie, jar: context.request.cookies });
+    logger.debug('Cookies', { cookie, jar: context.request.cookies, path: context.request.path, method: context.request.method });
 
     try {
       await auth.verifySessionCookie(cookie, true);
