@@ -6,7 +6,6 @@ import { Router } from '../../router';
 import UserService from '../../services/user.service';
 
 import { PageComponent } from '../../components/page-component';
-import { Route } from '../../util/route';
 
 const tag = 'login-component';
 
