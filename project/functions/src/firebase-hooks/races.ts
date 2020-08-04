@@ -1,21 +1,10 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-// const databaseGetValue = (path: string) => {
-//   return new Promise((resolve, reject) => {
-//     const rtdb = admin.database();
-//     rtdb.ref(path).once('value', (data) => {
-//       if (data) {
-//         resolve(data);
-//       }
-
-//       resolve(false);
-//     });
-//   });
-// }
-
 const sortRaces = (one: any, two: any) => {
-	if (one.time < two.time) {
+  if ()
+
+  if (one.time < two.time) {
   	return -1;
   }
   
@@ -27,7 +16,7 @@ const sortRaces = (one: any, two: any) => {
 }
 
 export default function (adminSDK: admin.app.App) {
-  const modifyNewRaceDocument = functions.firestore.document('/races/{docId').onCreate(async (document: admin.firestore.DocumentSnapshot) => {
+  const modifyNewRaceDocument = functions.firestore.document('/races/{docId}').onCreate(async (document: admin.firestore.DocumentSnapshot) => {
     //   // Setup
     const db = admin.firestore();
     const rtdb = admin.database();
@@ -38,7 +27,7 @@ export default function (adminSDK: admin.app.App) {
 
     // Get configured track
       // Get configruration
-      const trackConfig: any = await rtdb.ref('trackConfig').once('value') || 'OG';
+      const trackConfig: any = await rtdb.ref('trackConfig').once('value') || { track: 'OG' };
   
       // Get track document
       const doc = await db.collection('tracks').doc(trackConfig.track).get()
