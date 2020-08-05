@@ -372,6 +372,8 @@ class NewRaceComponent extends PageComponent {
         // Review results
         const { data: { lines } } = result;
 
+        console.dir(data);
+
         lines.forEach( (line: any) => {
 
           const totalPart = line.text.match(totalRegex);
