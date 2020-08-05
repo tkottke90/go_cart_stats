@@ -41,6 +41,18 @@ class NewRaceComponent extends PageComponent {
   ];
 
   private worker: any;
+  private hasVideo = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  private videoConstraints = {
+    video: {
+      facingMode: 'environment'
+    },
+    audio: false
+  };
+  private videoStream: MediaStream = new MediaStream();
+  private timer = {
+    time: 0,
+    string: '0 sec'
+  }
 
   constructor() {
     super();
@@ -67,6 +79,9 @@ class NewRaceComponent extends PageComponent {
           <div class="${styles.scanningBody} ${styles.pulse}">
             <h4>${message}${progress}</h4>
             <img src="${this.img}" />
+          </div>
+          <div slot="actions">
+            <p class="${styles.countdown}">${this.timer.string}</p>
           </div>
         `
 
@@ -255,8 +270,8 @@ class NewRaceComponent extends PageComponent {
             label="Scan"
             type="outline"
             padding="0.5rem"
-            @click=${this.scanImage}
-            .disabled=${this.loading}
+            @click=${this.renderScanner}
+            .disabled=${this.loading || !this.hasVideo}
             >
               <svg slot="suffixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M17,22V20H20V17H22V20.5C22,20.89 21.84,21.24 21.54,21.54C21.24,21.84 20.89,22 20.5,22H17M7,22H3.5C3.11,22 2.76,21.84 2.46,21.54C2.16,21.24 2,20.89 2,20.5V17H4V20H7V22M17,2H20.5C20.89,2 21.24,2.16 21.54,2.46C21.84,2.76 22,3.11 22,3.5V7H20V4H17V2M7,2V4H4V7H2V3.5C2,3.11 2.16,2.76 2.46,2.46C2.76,2.16 3.11,2 3.5,2H7M13,17.25L17,14.95V10.36L13,12.66V17.25M12,10.92L16,8.63L12,6.28L8,8.63L12,10.92M7,14.95L11,17.25V12.66L7,10.36V14.95M18.23,7.59C18.73,7.91 19,8.34 19,8.91V15.23C19,15.8 18.73,16.23 18.23,16.55L12.75,19.73C12.25,20.05 11.75,20.05 11.25,19.73L5.77,16.55C5.27,16.23 5,15.8 5,15.23V8.91C5,8.34 5.27,7.91 5.77,7.59L11.25,4.41C11.5,4.28 11.75,4.22 12,4.22C12.25,4.22 12.5,4.28 12.75,4.41L18.23,7.59Z" />
@@ -277,6 +292,52 @@ class NewRaceComponent extends PageComponent {
         </dialog-component>
      </main>
     `
+  }
+
+  private async renderScanner() {
+    this.videoStream = await navigator.mediaDevices.getUserMedia(this.videoConstraints);
+    const videoElement = document.createElement('video');
+    const canvas = document.createElement('canvas')
+
+    videoElement.srcObject = this.videoStream;
+    videoElement.setAttribute('autoplay', '');
+    videoElement.setAttribute('hidden', '');
+    videoElement.classList.add(styles.video)
+
+    canvas.classList.add(styles.video)
+    requestAnimationFrame(this.videoTick(canvas, videoElement));
+
+    this.dialogContent = html`
+      <h3 slot="header" class="${styles.scanningHeader}">Scanning Image</h3>
+      <div class="${styles.scanningBody} ${styles.pulse}">
+        <h4>Take Photo</h4>
+        ${videoElement}
+        ${canvas}
+      </div>
+      <div slot="actions">
+        <custom-button
+          label="Scan Image"
+          @click=${this.scanImage(canvas, videoElement)}
+        ></custom-button>
+      </div>
+    `;
+    this.loading = true;
+    this.requestUpdate();
+  }
+
+  private videoTick(canvas: HTMLCanvasElement, video: HTMLVideoElement) {
+    return () => {
+      if (!video) {
+        return;
+      }
+
+      const context: any = canvas.getContext('2d');
+      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth;
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(this.videoTick(canvas, video));
+    }
   }
 
   private addLap(event: Event) {
@@ -309,104 +370,60 @@ class NewRaceComponent extends PageComponent {
     this.requestUpdate();
   }
 
-  private scanImage(event: Event) {
-    const input = document.createElement('input') as HTMLInputElement;
-    input.type = 'file';
-    input.accept = 'image/png';
-    input.setAttribute('capture', 'environment');
+  private scanImage(canvas: HTMLCanvasElement, video: HTMLVideoElement) {
+    return async () => {
+      this.img = canvas.toDataURL();
+      video.pause();
 
-    fromEvent(input, 'change')
-      .subscribe( async (event: Event) => {
-        this.loading = true;
+      const timer = setInterval(() => {
+        this.timer.time++;
+
+        this.timer.string = `${this.timer.time} secs`
         this.requestUpdate();
+      }, 1000);
 
-        // Get Image
-        const target = event.target as HTMLInputElement;
-        const files = target.files as FileList;
+      await this.worker.load();
+      await this.worker.loadLanguage('eng');
+      await this.worker.initialize('eng');
+      const results: any = await this.worker.recognize(this.img);
 
-        if (files.length === 0) {
+      const { data: { lines } } = results;
+      lines.forEach( (line: any) => {
+        const totalPart = line.text.match(totalRegex);
+        const lineParts = line.text.match(lapRegex);
+        if (!lineParts) {
           return;
         }
-        
-        const file = files[0] as File;
 
-        const fileUri: any = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
+        const time = lineParts[2];
+        const position = lineParts[3];
+        const bestLap = !!lineParts[4];
 
-        const image = new Image() as HTMLImageElement;
-        const canvas = document.createElement('canvas');
-        const width = 640;
-        const height = 480;
+        if (totalPart) {
+          this.totalTime = totalPart[0].trim();
+        }
 
+        // Remove laps list is a single record with no time, remove it
+        if(this.laps.length === 1 && !this.laps[0].time){
+          this.laps.pop();
+        }
 
-        canvas.width = width;
-        canvas.height = height;
-
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-        image.src = fileUri;
-
-        console.table({
-          title: 'image size',
-          width: image.width,
-          height: image.height,
-          aspect: image.width / image.height
+        this.laps.push({
+          time,
+          position,
+          bestLap
         })
-
-        ctx.drawImage(image, 0, 0, width, height);
-
-        const imgData = ctx.canvas.toDataURL('image/png', 0.5)
-
-        this.img = imgData;
-        this.requestUpdate();
-
-        // Create Worker
-        await this.worker.load();
-        await this.worker.loadLanguage('eng');
-        await this.worker.initialize('eng');
-        const result = await this.worker.recognize(file);
-
-        // Review results
-        const { data: { lines } } = result;
-
-        console.dir(result);
-
-        lines.forEach( (line: any) => {
-
-          const totalPart = line.text.match(totalRegex);
-          const lineParts = line.text.match(lapRegex);
-          if (!lineParts) {
-            return;
-          }
-
-          const time = lineParts[2];
-          const position = lineParts[3];
-          const bestLap = !!lineParts[4];
-
-          if (totalPart) {
-            this.totalTime = totalPart[0].trim();
-          }
-
-          // Remove laps list is a single record with no time, remove it
-          if(this.laps.length === 1 && !this.laps[0].time){
-            this.laps.pop();
-          }
-
-          this.laps.push({
-            time,
-            position,
-            bestLap
-          })
-        });
-
-        this.loading = false;
-        this.requestUpdate();
       });
-  
-    input.click();
+
+      clearInterval(timer);
+      this.timer.time = 0;
+      this.timer.string = '0 sec';
+      this.videoStream.getTracks()[0].stop();
+
+
+      this.loading = false;
+      this.requestUpdate();
+    }
   }
 
   private async submit(event: Event) {
