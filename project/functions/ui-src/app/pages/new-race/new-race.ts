@@ -367,7 +367,7 @@ class NewRaceComponent extends PageComponent {
         await this.worker.load();
         await this.worker.loadLanguage('eng');
         await this.worker.initialize('eng');
-        const result = await this.worker.recognize(imgData);
+        const result = await this.worker.recognize(file);
 
         // Review results
         const { data: { lines } } = result;
