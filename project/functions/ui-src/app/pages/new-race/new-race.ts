@@ -144,7 +144,8 @@ class NewRaceComponent extends PageComponent {
         <input
           class="${styles.posCol}"
           name="position"
-          type="number"
+          type="text"
+          pattern="[0-9]*"
           value=${position}
           placeholder="5"
           data-lapIndex="${index}"
