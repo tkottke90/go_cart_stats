@@ -312,7 +312,7 @@ class NewRaceComponent extends PageComponent {
   private scanImage(event: Event) {
     const input = document.createElement('input') as HTMLInputElement;
     input.type = 'file';
-    input.accept = 'image/*';
+    input.accept = 'image/png';
     input.setAttribute('capture', 'environment');
 
     fromEvent(input, 'change')
