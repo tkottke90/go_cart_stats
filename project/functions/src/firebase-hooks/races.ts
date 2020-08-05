@@ -23,23 +23,21 @@ export default function (adminSDK: admin.app.App) {
     //   // Setup
     const db = admin.firestore();
     const rtdb = admin.database();
-    // const data: any = document.data();
-
-    functions.logger.info('Created Race');
     const data: any = document.data();
 
     // Get configured track
       // Get configruration
-      const trackConfig: any = await rtdb.ref('trackConfig').once('value') || { track: 'OG' };
-  
-      // Get track document
-      const doc = await db.collection('tracks').doc(trackConfig.track).get()
-      let trackDoc: any = doc.data();      
+      const trackConfig: admin.database.DataSnapshot = await rtdb.ref('trackConfig').once('value');
+      const config = trackConfig.val();
 
-      // If track is false, create record
-      if (!trackDoc) {
+      // Get track document
+      const trackDockRef: admin.firestore.DocumentSnapshot = await db.collection('tracks').doc(config.track).get();;
+      let trackDoc: any;
+      if (trackDockRef.exists){
+        trackDoc = trackDockRef.data();
+      } else {
         trackDoc = {
-          name: trackConfig.track,
+          name: config.track,
           thumbnail: '',
           hotLaps: []
         }
@@ -52,15 +50,15 @@ export default function (adminSDK: admin.app.App) {
     trackDoc.hotLaps.sort(sortRaces);
     
     // Limit laps to top 10
-    if (trackDoc.hotlaps.length > 10) {
-      trackDoc.hotlaps.length = 10;
+    if (trackDoc.hotLaps.length > 10) {
+      trackDoc.hotLaps.length = 10;
     }
 
     // Update track document with best laps
-    doc.ref.update(trackDoc);
+    trackDockRef.ref.update(trackDoc);
 
     document.ref.update({
-      track: trackConfig.track
+      track: config.track
     })
 
     return;
