@@ -1,0 +1,40 @@
+:host {
+  --border-size: 5px;
+  --border-size-inverse: 5px;
+  --border-margin: 5px;
+  --diameter: 5px;
+}
+
+.loaderContainer {
+  display: block;
+  margin: auto;
+}
+
+.loader{
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.loader:before, .loader:after{
+  content: "";
+  position: absolute;
+  top: var(--border-size-inverse);
+  left: var(--border-size-inverse);
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  border: var(--border-size) solid transparent;
+  border-top-color: var(--theme-accent);
+}
+
+.loader:before:global{
+  z-index: 100;
+  animation: spin 1s infinite;
+}
+
+.loader:after{
+  border: var(--border-size) solid #ccc;
+}
