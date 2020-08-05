@@ -6,12 +6,17 @@ import { Router } from '../../router';
 import UserService from '../../services/user.service';
 
 import { PageComponent } from '../../components/page-component';
+import formHelper from '../../util/form-helper';
+import FirebaseService from '../../services/firebase.service';
 
 const tag = 'login-component';
 
 class LoginElement extends PageComponent {
 
   private disableBtns = false;
+  private signUpSpinner = false;
+  private signInSpinner = false;
+  // private googleSpinner = false;
 
   firstUpdated() {
     const form = this.querySelector('form') as HTMLElement;
@@ -32,8 +37,14 @@ class LoginElement extends PageComponent {
                         .filter( (item: any) => !!item.name )
                         .reduce( (data: any, element: any) => Object.assign(data, { [element.name]: element.value }), {})
 
+      const valid = formHelper.isValidFromElement(event.target);
+      if (!valid) {
+        return;
+      }
+
       try {
         this.disableBtns = true;
+        this.signInSpinner = true;
         this.requestUpdate();
         const result = await UserService.login(formData.username, formData.password)
         if (!result.user){
@@ -48,6 +59,7 @@ class LoginElement extends PageComponent {
         });
       }
       this.disableBtns = false;
+      this.signUpSpinner = false;
       this.requestUpdate();
       Router.navigate('/'); 
     });
@@ -72,11 +84,19 @@ class LoginElement extends PageComponent {
         <h2>Carousel Karters</h2>
       </section> 
       <form>
-        <input name="username" type="email" />
-        <input name="password" type="password" />
-        <button class=${styles.loginBtn} data-type="local" ?disabled=${this.disableBtns}>Login</button>
+        <input name="username" type="email" required autocomplete="username"/>
+        <input name="password" type="password" required min="8" autocomplete="current-password"/>
+        <div class="${styles.btnGroup}">
+          <button class=${styles.loginBtn} data-type="local" @click=${this.signUp} ?disabled=${this.disableBtns}>
+            ${ this.signUpSpinner ? html`<span class="${styles.pulse}">Loading...</span>` : 'Sign Up' }
+          </button>
+          <button class=${styles.loginBtn} data-type="local" ?disabled=${this.disableBtns}>
+            ${ this.signInSpinner ? html`<span class="${styles.pulse}">Loading...</span>` : 'Login' }
+          </button>
+        </div>
+        
         <br>
-        <button class=${styles.googleBtn} data-type="google" ?disabled=${this.disableBtns} @click=${UserService.loginWithGoogle}>
+        <button class=${styles.googleBtn} data-type="google" ?disabled=${this.disableBtns} @click=${this.loginWithGoogle}>
           <svg viewBox="0 0 46 46">
             <g id="logo_googleg_48dp" sketch:type="MSLayerGroup" transform="translate(15.000000, 15.000000)">
               <path d="M17.64,9.20454545 C17.64,8.56636364 17.5827273,7.95272727 17.4763636,7.36363636 L9,7.36363636 L9,10.845 L13.8436364,10.845 C13.635,11.97 13.0009091,12.9231818 12.0477273,13.5613636 L12.0477273,15.8195455 L14.9563636,15.8195455 C16.6581818,14.2527273 17.64,11.9454545 17.64,9.20454545 L17.64,9.20454545 Z" id="Shape" fill="#4285F4" sketch:type="MSShapeGroup"></path>
@@ -92,21 +112,92 @@ class LoginElement extends PageComponent {
     `
   }
 
-  async loginWithGoogle() {
+  private async signUp(event: Event) {
+    event.preventDefault();
+
+    const input = event.target as HTMLButtonElement;
+    const form = input.form as HTMLFormElement;
+    const elements = Array.from(form.elements) as HTMLElement[];
+    const formData: any = elements
+                        .filter( (i: any) => !!i.name )
+                        .reduce( (data: any, element: any) => Object.assign(data, formHelper.getValue(element)), {}) 
+
+    const valid = elements
+                    .map( (i: any) => { i.setCustomValidity(''); return i; })
+                    .filter( (i: any) => { console.log(!!i.name); return !!i.name } )
+                    .map( i => formHelper.getValidity(i) );
+
+    console.dir(valid)
+
+    if(!valid.every( i => i )) {
+      return;
+    }
+
+    try {
+      this.disableBtns = true;
+      this.signUpSpinner = true;
+      this.requestUpdate();
+      const result = await UserService.signUp(formData.username, formData.password);
+
+      if (result) {
+        UserService.getSession();
+      }
+
+      Router.navigate('/');
+    } catch (err) {
+      console.error(err);
+
+      if (err.code === 'auth/email-already-in-use') {
+        const username = elements[0] as HTMLInputElement;
+        username.setCustomValidity(err.message);
+        username.reportValidity();
+        
+        this.disableBtns = false;
+        this.signUpSpinner = false;
+        this.requestUpdate();
+        return;
+      }
+    }
+
+    this.disableBtns = false;
+    this.signUpSpinner = false;
+    form.reset();
+    this.requestUpdate();
+  } 
+
+  private async loginWithGoogle(event: Event) {
+    event.preventDefault();
     this.disableBtns = true;
     this.requestUpdate();
 
     try {
-      await UserService.loginWithGoogle();
+      const result: any = await UserService.loginWithGoogle();
       
-      
-      Router.navigate('/');
+      if (result) {
+        UserService.getSession();
+        this.waitForUser(result.user.uid);
+      }
     } catch (err) {
       console.error(err);
     }
 
     this.disableBtns = false;
     this.requestUpdate();
+  }
+
+  private waitForUser(userId: string) {
+    const userDocListener = FirebaseService.$userCreated(userId).onSnapshot({
+      next: async (snapshot: firebase.firestore.DocumentSnapshot) => {
+        if (!snapshot){
+          return;
+        }
+        
+        this.disableBtns = false;
+
+        Router.navigate('/')
+        userDocListener();
+      }
+    })
   }
 }
 

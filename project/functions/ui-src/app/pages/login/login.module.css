@@ -44,7 +44,17 @@
   background-color: var(--login-input-background);
 }
 
+.loginContainer > form > input[invalid] {
+  border-color: var(--theme-warn);
+}
+
+.btnGroup {
+  width: 100%;
+  display: flex;
+}
+
 .loginBtn {
+  cursor: pointer;
   margin: 1rem 0 1rem auto;
 
   padding: 0.5rem 1rem;
@@ -56,6 +66,7 @@
 }
 
 .googleBtn {
+  cursor: pointer;
   padding-right: 1rem;
 
   display: flex;
@@ -75,4 +86,11 @@
   color: var(--google-light-font);
   font-weight: 600;
   font-size: 1.15rem;
+}
+
+.pulse:global {
+  animation-name: pulse;
+  animation-duration: 2s;
+  animation-timing-function: var(--default-bezier);
+  animation-iteration-count: infinite;
 }
