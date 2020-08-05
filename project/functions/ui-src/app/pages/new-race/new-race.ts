@@ -232,7 +232,7 @@ class NewRaceComponent extends PageComponent {
           />
         </div>
 
-        <div class="${styles.trackList}">
+        <div class="${styles.trackList}" styles="display: none">
           ${this.tracks.map( track => {
             return html`
               <button class="${styles.trackButton}" data-name="${track.name}">
