@@ -336,13 +336,27 @@ class NewRaceComponent extends PageComponent {
           reader.readAsDataURL(file);
         });
 
-        this.img = fileUri;
+        const image = new Image() as HTMLImageElement;
+        const canvas = document.createElement('canvas');
+
+        canvas.width = 640;
+        canvas.height = 480;
+
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        image.src = fileUri;
+
+        ctx.drawImage(image, 0, 0, 640, 480);
+
+        const data = ctx.canvas.toDataURL('image/png', 0.5)
+
+        this.img = data;
 
         // Create Worker
         await this.worker.load();
         await this.worker.loadLanguage('eng');
         await this.worker.initialize('eng');
-        const result = await this.worker.recognize(fileUri);
+        const result = await this.worker.recognize(data);
 
         // Review results
         const { data: { lines } } = result;
