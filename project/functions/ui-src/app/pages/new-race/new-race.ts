@@ -338,19 +338,23 @@ class NewRaceComponent extends PageComponent {
 
         const image = new Image() as HTMLImageElement;
         const canvas = document.createElement('canvas');
+        const width = 1280;
+        const height = 960;
 
-        canvas.width = 640;
-        canvas.height = 480;
+
+        canvas.width = width;
+        canvas.height = height;
 
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         image.src = fileUri;
 
-        ctx.drawImage(image, 0, 0, 640, 480);
+        ctx.drawImage(image, 0, 0, width, height);
 
         const data = ctx.canvas.toDataURL('image/png', 0.5)
 
         this.img = data;
+        this.requestUpdate();
 
         // Create Worker
         await this.worker.load();

@@ -172,3 +172,8 @@
   animation-timing-function: var(--default-bezier);
   animation-iteration-count: infinite;
 }
+
+.scanningBody > img {
+  margin-top: 0.5rem;
+  width: 85%
+}
