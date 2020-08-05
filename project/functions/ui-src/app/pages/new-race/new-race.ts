@@ -338,8 +338,8 @@ class NewRaceComponent extends PageComponent {
 
         const image = new Image() as HTMLImageElement;
         const canvas = document.createElement('canvas');
-        const width = 1280;
-        const height = 960;
+        const width = 640;
+        const height = 480;
 
 
         canvas.width = width;
@@ -348,6 +348,13 @@ class NewRaceComponent extends PageComponent {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         image.src = fileUri;
+
+        console.table({
+          title: 'image size',
+          width: image.width,
+          height: image.height,
+          aspect: image.width / image.height
+        })
 
         ctx.drawImage(image, 0, 0, width, height);
 
