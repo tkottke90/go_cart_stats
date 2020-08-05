@@ -4,8 +4,6 @@ import 'firebase/firestore'
 
 export default class FirebaseService {
 
-  public static auth = firebase.auth();
-
   public static getCurrentUser = () => {
     return new Promise((resolve, reject) => {
       const unsubscribe = firebase.auth().onAuthStateChanged( user => {
@@ -39,6 +37,10 @@ export default class FirebaseService {
     return firebase.auth().currentUser;
   }
 
+  public static signUp(email: string, password: string): Promise<firebase.auth.UserCredential> {
+    return firebase.auth().createUserWithEmailAndPassword(email, password);
+  }
+
   public static signInWithUNPW(email: string, password: string): Promise<firebase.auth.UserCredential> {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   }
@@ -59,5 +61,9 @@ export default class FirebaseService {
     const docName = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
     console.dir(docName);
     return firebase.firestore().collection('dailyVotes').doc(docName);
+  }
+
+  public static $userCreated(userId: string) {
+    return firebase.firestore().collection('users').doc(userId);
   }
 }

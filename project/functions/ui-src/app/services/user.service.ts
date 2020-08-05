@@ -23,7 +23,7 @@ export default class UserService {
   }
 
   public static signUp(username: string, password: string) {
-    return FirebaseService.auth.createUserWithEmailAndPassword(username, password);
+    return FirebaseService.signUp(username, password);
   }
 
   public static login(username: string, password: string) {
