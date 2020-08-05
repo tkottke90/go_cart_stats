@@ -19,7 +19,7 @@ body[theme='light'] {
   --theme-on-primary: #FFF;
   --theme-on-accent: #000;
   --theme-on-warn: #222;
-  --foreground: #FFF;
+  --foreground: #222;
   --background: #AAA;
 
   --overlay: #222222ED;
