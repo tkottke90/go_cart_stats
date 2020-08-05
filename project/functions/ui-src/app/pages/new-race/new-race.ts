@@ -358,21 +358,21 @@ class NewRaceComponent extends PageComponent {
 
         ctx.drawImage(image, 0, 0, width, height);
 
-        const data = ctx.canvas.toDataURL('image/png', 0.5)
+        const imgData = ctx.canvas.toDataURL('image/png', 0.5)
 
-        this.img = data;
+        this.img = imgData;
         this.requestUpdate();
 
         // Create Worker
         await this.worker.load();
         await this.worker.loadLanguage('eng');
         await this.worker.initialize('eng');
-        const result = await this.worker.recognize(data);
+        const result = await this.worker.recognize(imgData);
 
         // Review results
         const { data: { lines } } = result;
 
-        console.dir(data);
+        console.dir(result);
 
         lines.forEach( (line: any) => {
 
