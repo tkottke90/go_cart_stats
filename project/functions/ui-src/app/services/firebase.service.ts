@@ -4,6 +4,8 @@ import 'firebase/firestore'
 
 export default class FirebaseService {
 
+  public static auth = firebase.auth();
+
   public static getCurrentUser = () => {
     return new Promise((resolve, reject) => {
       const unsubscribe = firebase.auth().onAuthStateChanged( user => {

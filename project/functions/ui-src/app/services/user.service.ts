@@ -22,6 +22,10 @@ export default class UserService {
     return FirebaseService.currentUser();
   }
 
+  public static signUp(username: string, password: string) {
+    return FirebaseService.auth.createUserWithEmailAndPassword(username, password);
+  }
+
   public static login(username: string, password: string) {
     return FirebaseService.signInWithUNPW(username, password);
   }
