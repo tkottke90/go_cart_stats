@@ -4,6 +4,7 @@ import UserService from '../../services/user.service';
 import { Router } from '../../router';
 
 import { PageComponent } from '../../components/page-component';
+import '@material/mwc-drawer'
 import '../../components/header/header-component';
 import '../../components/custom-button/custom-button-component';
 
@@ -19,6 +20,7 @@ const tag = 'home-component';
 class HomeElement extends PageComponent {
 
   private loading = true;
+  private showDrawer = false;
   private user: User.Details = UserService.UserPlaceholder;
 
   private races: Races.Entry[] = [
@@ -48,8 +50,10 @@ class HomeElement extends PageComponent {
   }
 
   onActivated() {
+    this.showDrawer = false;
     UserService.$user.subscribe( user => {
       if (!user) {
+        UserService.logout();
         Router.navigate('/login');
       }
 
@@ -75,6 +79,7 @@ class HomeElement extends PageComponent {
       console.error(error);
       Router.navigate('/login');
     });
+    this.requestUpdate();
   }
 
   generateRaceTable() {
@@ -154,11 +159,37 @@ class HomeElement extends PageComponent {
   }
 
   render() {
+
     return html`
-     <header-component>
-      <h3 slot="title">Carousel Karters</h3>
-     </header-component>
-     <main class="${styles.content}">
+     <mwc-drawer type="modal" ?open=${this.showDrawer} @closed=${this.toggleDrawer}>
+        <custom-button label="logout" padding="0.5rem" @click=${this.logout}>
+          <svg style="width:24px;height:24px" slot="prefixIcon" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" />
+          </svg>
+        </custom-button>
+        <div slot="appContent">
+          ${this.renderMain()}
+        </div>
+     </mwc-drawer>
+    `
+  }
+
+  private renderMain() {
+    return html`
+      <header-component>
+        <h3 slot="title">Carousel Karters</h3>
+        <custom-button
+          slot="menu"
+          color="on-primary"
+          padding="0"
+          @click=${this.toggleDrawer}
+        >
+          <svg slot="prefixIcon" style="width:24px;height:24px" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+          </svg>
+        </custom-button>
+      </header-component>
+      <main class="${styles.content}">
       <section class="${styles.info}">
         <h3 class=${styles.number}>19</h3>
         <div class=${styles.detail}>
@@ -182,11 +213,16 @@ class HomeElement extends PageComponent {
         <custom-button class=${styles.tableBtn} padding="0.25rem" type="raised" label="My Votes" disabled></custom-button>
         ${this.generateVotesTable()}
       </section>
-     </main>
-     <section class="${styles.loadingContainer}" ?hidden=${!this.loading} >
+      </main>
+      <section class="${styles.loadingContainer}" ?hidden=${!this.loading} >
       <h2>Loading...</h2>
-     </section>
-    `
+      </section>
+    `;
+  }
+
+  private toggleDrawer() {
+    this.showDrawer = !this.showDrawer;
+    this.requestUpdate();
   }
 
   private navigateToNewRace() {
@@ -195,6 +231,14 @@ class HomeElement extends PageComponent {
 
   private navigateToNewVote() {
     Router.navigate('/new-vote');
+  }
+
+  private logout() {
+    this.showDrawer = false;
+
+    UserService.logout();
+    Router.navigate('/login');
+    this.requestUpdate();
   }
 }
 
