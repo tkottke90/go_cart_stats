@@ -18,7 +18,7 @@ const tag = 'new-vote-component'
 
 class NewVoteComponent extends PageComponent {
 
-  private isAdmin: boolean = true;
+  private isAdmin: boolean = false;
   private user: any = false;
   private dailyRecord: any = VotesService.DailyPlaceholder;
   private userList: User.Details[] = [];
