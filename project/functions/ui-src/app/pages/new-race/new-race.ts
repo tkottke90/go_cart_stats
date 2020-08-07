@@ -434,7 +434,10 @@ class NewRaceComponent extends PageComponent {
                         .filter( (item: any) => !!item.name && !['bestLap', 'position', 'time'].includes(item.name) )
                         .reduce( (data: any, element: any) => Object.assign(data, formHelper.getValue(element)), {})
 
-    const valid = formHelper.isValidFromElement(form);
+    const valid = elements
+                    .map( (i: any) => { i.setCustomValidity(''); return i; })
+                    .filter( (i: any) => !!i.name && !['bestLap', 'position', 'time'].includes(i.name))
+                    .map( i => formHelper.getValidity(i) );
 
     const bestTime = this.laps.find( item => item.bestLap );
     const data: Races.Entry = {
@@ -485,15 +488,19 @@ class NewRaceComponent extends PageComponent {
 
       // Router.navigate('/');
     } else {
-      const invalidFields = elements.map((e: HTMLElement) => {
-        const valid = formHelper.getValidity(e);
-        if (valid) {
-          return false;
-        }
-        const elem = e as HTMLInputElement;
+      const invalidFields = elements
+        .filter( (item: any) => !!item.name && !['bestLap', 'position', 'time'].includes(item.name) )
+        .map((e: HTMLElement) => {
+          const valid = formHelper.getValidity(e);
+          if (valid) {
+            return false;
+          }
+          const elem = e as HTMLInputElement;
 
-        return { name: elem.name, validity: elem.validationMessage }
-      }).filter( response => response );
+          return { name: elem.name, validity: elem.validationMessage }
+        }).filter( response => response );
+
+      console.dir(invalidFields);
 
       this.dialogContent = html`
         <h3 slot="header" class="${styles.scanningHeader}">Saving Race</h3>
