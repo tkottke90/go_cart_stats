@@ -191,7 +191,7 @@ class HomeElement extends PageComponent {
       </header-component>
       <main class="${styles.content}">
       <section class="${styles.info}">
-        <h3 class=${styles.number}>19</h3>
+        <h3 class=${styles.number}>${this.user.number}</h3>
         <div class=${styles.detail}>
           <h3 class="${styles.name}" text-ellipsis>${this.user.displayName ? this.user.displayName : this.user.email }</h3>
           ${this.user.nickname ? html`<h5 class="${styles.nname}" text-ellipsis >${this.user.nickname ? this.user.nickname : ''}</h5>` : ''}
