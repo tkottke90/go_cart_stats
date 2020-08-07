@@ -218,7 +218,7 @@ class NewRaceComponent extends PageComponent {
             name="cartNumber"
             placeholder="Cart"
             min="0"
-            length="3"
+            max="999"
             required
           />
 
