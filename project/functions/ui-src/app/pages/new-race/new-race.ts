@@ -232,7 +232,7 @@ class NewRaceComponent extends PageComponent {
           />
         </div>
 
-        <div class="${styles.trackList}" styles="display: none">
+        <!-- <div class="${styles.trackList}" styles="display: none">
           ${this.tracks.map( track => {
             return html`
               <button class="${styles.trackButton}" data-name="${track.name}">
@@ -240,7 +240,7 @@ class NewRaceComponent extends PageComponent {
               </button>
             `
           })}
-        </div>
+        </div> -->
 
         <div id="lap-times">
           <div class="${styles.lapRow}">
@@ -462,7 +462,13 @@ class NewRaceComponent extends PageComponent {
       this.requestUpdate();
 
       try {
-        await RaceService.createRace(data)
+        const result = await RaceService.createRace(data)
+
+        if (result.status > 201) {
+
+
+          return;
+        }
       } catch(error) {
         console.error(error);
         this.loading = false;
