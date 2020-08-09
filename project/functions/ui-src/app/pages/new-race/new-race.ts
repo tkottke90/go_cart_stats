@@ -307,8 +307,16 @@ class NewRaceComponent extends PageComponent {
         ${videoElement}
         ${canvas}
       </div>
-      <div slot="actions">
+      <div slot="actions" class="${styles.scanActions}">
         <custom-button
+          color="primary"
+          label="Cancel"
+          @click=${this.closeVideo}
+        ></custom-button>
+        
+        <custom-button
+          type="raised"
+          color="primary"
           label="Scan Image"
           @click=${this.scanImage(canvas, videoElement)}
         ></custom-button>
@@ -532,6 +540,14 @@ class NewRaceComponent extends PageComponent {
 
   private navgiateToHome() {
     Router.navigate('/');
+  }
+
+  private closeVideo() {
+    this.timer.time = 0;
+    this.timer.string = '0 sec';
+    this.videoStream.getTracks()[0].stop();
+
+    this.closeLoading();
   }
 
   private closeLoading() {
