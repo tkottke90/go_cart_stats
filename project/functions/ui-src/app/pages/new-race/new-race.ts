@@ -1,16 +1,16 @@
 import { html, TemplateResult } from 'lit-html';
-import { unsafeSVG } from 'lit-html/directives/unsafe-svg'
+// import { unsafeSVG } from 'lit-html/directives/unsafe-svg'
 import styles from './new-race.module.css'
 import { fromEvent } from 'rxjs';
 
 declare var Tesseract: any;
 
 import UserService from '../../services/user.service';
-import TrackService from '../../services/track.service';
+// import TrackService from '../../services/track.service';
 import RaceService from '../../services/race.service';
 
 import { User } from '../../classes/user.class';
-import { Tracks } from '../../classes/track.class';
+// import { Tracks } from '../../classes/track.class';
 import { Races } from '../../classes/races.class';
 
 import { Router } from '../../router';
@@ -32,7 +32,7 @@ class NewRaceComponent extends PageComponent {
   private loading = false;
   private dialogContent: TemplateResult = html``;
   private user: User.Details = UserService.UserPlaceholder;
-  private tracks: Tracks.Track[] = [ TrackService.TrackPlaceholder ];
+  // private tracks: Tracks.Track[] = [ TrackService.TrackPlaceholder ];
 
   private time: string = '';
   private totalTime = '';
@@ -100,17 +100,17 @@ class NewRaceComponent extends PageComponent {
       this.requestUpdate();
     });
 
-    TrackService.$tracks.subscribe( track => {
-      if (!track) {
-        this.tracks = [ TrackService.TrackPlaceholder ];
-      }
+    // TrackService.$tracks.subscribe( track => {
+    //   if (!track) {
+    //     this.tracks = [ TrackService.TrackPlaceholder ];
+    //   }
 
-      this.tracks = track;
-      this.requestUpdate();
-    });
+    //   this.tracks = track;
+    //   this.requestUpdate();
+    // });
 
     await UserService.getUserDetails();
-    await TrackService.findTrack({});
+    // await TrackService.findTrack({});
 
     const inputs = this.querySelectorAll('input');
     inputs.forEach( input => {
@@ -232,15 +232,7 @@ class NewRaceComponent extends PageComponent {
           />
         </div>
 
-        <!-- <div class="${styles.trackList}" styles="display: none">
-          ${this.tracks.map( track => {
-            return html`
-              <button class="${styles.trackButton}" data-name="${track.name}">
-                ${ unsafeSVG(track.thumbnail) }
-              </button>
-            `
-          })}
-        </div> -->
+        <!--   -->
 
         <div id="lap-times">
           <div class="${styles.lapRow}">
