@@ -1,6 +1,16 @@
 import * as functions from 'firebase-functions';
 import { app, firestore, database, auth } from 'firebase-admin';
 import * as _ from 'lodash';
+import { ROLES } from '../constants';
+
+
+function generateHexString(length: number) {
+  var ret = "";
+  while (ret.length < length) {
+    ret += Math.random().toString(16).substring(2);
+  }
+  return ret.substring(0,length);
+}
 
 /**
  * Hook triggers when a new user is created.  The application should create a new
@@ -36,7 +46,6 @@ export default function (adminSDK: app.App) {
   });
 
   const createUserDocument = functions.auth.user().onCreate(async user => {
-    // const userID = user.uid;
 
     try {
       const db = firestore();
@@ -62,12 +71,16 @@ export default function (adminSDK: app.App) {
     // functions.pubsub.schedule('every 1 minutes').onRun(async (context: functions.EventContext)
     
     // TODO - Add config key validator to protect route
+    const [, accessKey] = req.headers.authorization ? 
+      req.headers.authorization.split(' ') :
+      [ '', '' ];
 
     // Get Configuration
     const rtdb = database();
     let config;
+    let configRef;
     try {
-      const configRef = await rtdb.ref('admins').once('value');
+      configRef = await rtdb.ref('admins').once('value');
       if (configRef.exists()) {
         config = configRef.val();
       } else {
@@ -78,21 +91,25 @@ export default function (adminSDK: app.App) {
       config = {};
     }
 
+    if (config.key !== accessKey) {
+      functions.logger.error('Invalid access key', { timestamp: Date.now(), provided_key: accessKey, configured_key: config.key })
+      res.status(401).json({ error: new Error('Invalid Access Key') });
+      return;
+    }
+
     const configList: string[] = config.list.split(',');
     const { users } = await auth().listUsers()
     users.forEach( user => {
       console.dir({ user: user.uid, claims: user.customClaims, admin: configList.includes(user.uid) });
-      if (configList.includes(user.uid) && !_.get(user, 'customClaims.admin', false)) {
+      if (configList.includes(user.uid)) {
         auth()
-          .setCustomUserClaims(user.uid, { admin: true })
+          .setCustomUserClaims(user.uid, { role: ROLES.ADMIN })
           .catch( err => {
             functions.logger.warn(`Error updating custom claims for user: ${user.uid} (${err.message})`);
           });
-      }
-
-      if (!configList.includes(user.uid) && !!_.get(user, 'customClaims.admin', false)) {
+      } else {
         auth()
-          .setCustomUserClaims(user.uid, { admin: false })
+          .setCustomUserClaims(user.uid, { role: ROLES.USER })
           .catch( err => {
             functions.logger.warn(`Error updating custom claims for user: ${user.uid} (${err.message})`);
           });
@@ -101,6 +118,11 @@ export default function (adminSDK: app.App) {
 
 
     // TODO - On Success, generate a new key and store in the db
+    if (config && configRef) {
+      config.key = generateHexString(58)
+      configRef.ref.set(config);
+    }
+
 
     res.status(200).json({ status: 'sucess' });
   });
