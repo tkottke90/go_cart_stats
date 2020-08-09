@@ -187,3 +187,8 @@
   font-size: 0.85rem;
   opacity: 0.5;
 }
+
+.scanActions {
+  display: flex;
+  justify-content: flex-end;
+}
