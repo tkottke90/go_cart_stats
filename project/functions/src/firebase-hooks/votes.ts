@@ -26,7 +26,7 @@ export default function (adminSDK: admin.app.App) {
 
      todaysVotes.docs.forEach( async doc => {
         doc.ref.update({
-          active: false
+          inactive: true
         })
       });
 
@@ -97,7 +97,7 @@ export default function (adminSDK: admin.app.App) {
 
 
       return document.ref.update({
-        active: true,
+        inactive: false,
         timestamp
       });
     } catch (error) {
