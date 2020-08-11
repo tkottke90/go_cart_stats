@@ -14,7 +14,7 @@ import UserService from './app/services/user.service';
     return;
   }
 
-  if ('serviceWorker' in navigator && false) {
+  if ('serviceWorker' in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (refreshing) { return; }
@@ -24,7 +24,7 @@ import UserService from './app/services/user.service';
       }
     );
 
-    // navigator.serviceWorker.register('service-worker.js');
+    navigator.serviceWorker.register('service-worker.js');
   }
 
   Router.init(routes);
