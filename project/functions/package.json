@@ -22,7 +22,7 @@
     "@hapi/joi": "^17.1.1",
     "@material/mwc-drawer": "^0.18.0",
     "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "firebase": "^7.16.1",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.9.0",
